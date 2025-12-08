@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nexio - Mental Health Support Germany</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Merriweather:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+              serif: ['Merriweather', 'serif'],
+            },
+            colors: {
+              teal: {
+                50: '#f0fdfa',
+                100: '#ccfbf1',
+                200: '#99f6e4',
+                300: '#5eead4',
+                400: '#2dd4bf',
+                500: '#14b8a6',
+                600: '#0d9488',
+                700: '#0f766e',
+                800: '#115e59',
+                900: '#134e4a',
+              }
+            },
+            animation: {
+              marquee: 'marquee 25s linear infinite',
+              'vibrate-jump': 'vibrate-jump 3s ease-in-out infinite',
+              'fade-in': 'fadeIn 0.5s ease-out forwards',
+            },
+            keyframes: {
+              marquee: {
+                '0%': { transform: 'translateX(0%)' },
+                '100%': { transform: 'translateX(-100%)' },
+              },
+              'vibrate-jump': {
+                '0%, 60%': { transform: 'translateY(0) rotate(0)' },
+                '62%': { transform: 'translateY(-6px) rotate(-3deg)' },
+                '66%': { transform: 'translateY(-6px) rotate(3deg)' },
+                '70%': { transform: 'translateY(-6px) rotate(-3deg)' },
+                '74%': { transform: 'translateY(-6px) rotate(3deg)' },
+                '78%': { transform: 'translateY(-6px) rotate(-3deg)' },
+                '82%': { transform: 'translateY(-6px) rotate(3deg)' },
+                '86%': { transform: 'translateY(-6px) rotate(-3deg)' },
+                '90%': { transform: 'translateY(-6px) rotate(3deg)' },
+                '92%': { transform: 'translateY(-6px) rotate(0)' },
+                '95%': { transform: 'translateY(0) rotate(0)' },
+              },
+              fadeIn: {
+                '0%': { opacity: '0', transform: 'translateY(10px)' },
+                '100%': { opacity: '1', transform: 'translateY(0)' },
+              }
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      /* Ocean Wave Animation */
+      .ocean { 
+        height: 5%;
+        width: 100%;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        background: transparent;
+        z-index: 0;
+        pointer-events: none;
+      }
+      
+      .wave {
+        background: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/85486/wave.svg) repeat-x; 
+        position: absolute;
+        top: -198px;
+        width: 6400px;
+        height: 198px;
+        animation: wave 20s cubic-bezier( 0.36, 0.45, 0.63, 0.53) infinite;
+        transform: translate3d(0, 0, 0);
+        opacity: 0.08;
+      }
+      
+      .wave:nth-of-type(2) {
+        top: -175px;
+        animation: wave 20s cubic-bezier( 0.36, 0.45, 0.63, 0.53) -.125s infinite, swell 20s ease -1.25s infinite;
+        opacity: 0.15;
+      }
+      
+      @keyframes wave {
+        0% { margin-left: 0; }
+        100% { margin-left: -1600px; }
+      }
+      
+      @keyframes swell {
+        0%, 100% { transform: translate3d(0,-25px,0); }
+        50% { transform: translate3d(0,5px,0); }
+      }
+
+      /* Utility */
+      .hidden { display: none !important; }
+    </style>
+    <script type="importmap">
+{
+  "imports": {
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.31.0",
+    "react/": "https://aistudiocdn.com/react@^19.2.1/",
+    "react": "https://aistudiocdn.com/react@^19.2.1",
+    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.556.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.1/"
+  }
+}
+</script>
+  </head>
+  <body class="bg-stone-50 text-stone-800 antialiased overflow-x-hidden font-sans relative">
+
+    <!-- Background Ocean Waves -->
+    <div class="ocean">
+      <div class="wave"></div>
+      <div class="wave"></div>
+    </div>
+
+    <!-- MANDATORY COOKIE OVERLAY -->
+    <div id="cookie-overlay" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-stone-900/95 backdrop-blur-md hidden">
+      <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-8 text-center animate-fade-in border border-stone-200">
+        
+        <!-- Icon Container -->
+        <div id="cookie-icon-container" class="mb-4 flex justify-center">
+            <!-- Injected by JS -->
+        </div>
+
+        <h2 id="cookie-title" class="text-2xl font-serif font-bold text-stone-900 mb-2"></h2>
+        <p id="cookie-description" class="text-stone-600 mb-6 text-sm leading-relaxed"></p>
+        
+        <div id="cookie-actions" class="flex flex-col gap-3">
+          <!-- Buttons injected by JS -->
+        </div>
+        
+        <button id="btn-read-cookie-policy" class="mt-6 text-xs text-stone-400 underline hover:text-stone-600">
+          Read Cookie Policy
+        </button>
+      </div>
+    </div>
+
+    <!-- Marquee Banner -->
+    <div class="bg-teal-900 text-teal-50 py-3 overflow-hidden whitespace-nowrap relative z-10">
+      <div class="animate-marquee inline-block">
+        <span class="mx-4 text-sm font-bold tracking-widest uppercase">• Coming Soon</span>
+        <span class="mx-4 text-sm font-bold tracking-widest uppercase">• Coming Soon</span>
+        <span class="mx-4 text-sm font-bold tracking-widest uppercase">• Coming Soon</span>
+        <span class="mx-4 text-sm font-bold tracking-widest uppercase">• Coming Soon</span>
+        <span class="mx-4 text-sm font-bold tracking-widest uppercase">• Coming Soon</span>
+        <span class="mx-4 text-sm font-bold tracking-widest uppercase">• Coming Soon</span>
+        <span class="mx-4 text-sm font-bold tracking-widest uppercase">• Coming Soon</span>
+        <span class="mx-4 text-sm font-bold tracking-widest uppercase">• Coming Soon</span>
+        <span class="mx-4 text-sm font-bold tracking-widest uppercase">• Coming Soon</span>
+        <span class="mx-4 text-sm font-bold tracking-widest uppercase">• Coming Soon</span>
+        <span class="mx-4 text-sm font-bold tracking-widest uppercase">• Coming Soon</span>
+        <span class="mx-4 text-sm font-bold tracking-widest uppercase">• Coming Soon</span>
+      </div>
+      <div class="animate-marquee inline-block absolute top-3 left-0">
+        <span class="mx-4 text-sm font-bold tracking-widest uppercase">• Coming Soon</span>
+        <span class="mx-4 text-sm font-bold tracking-widest uppercase">• Coming Soon</span>
+        <span class="mx-4 text-sm font-bold tracking-widest uppercase">• Coming Soon</span>
+        <span class="mx-4 text-sm font-bold tracking-widest uppercase">• Coming Soon</span>
+        <span class="mx-4 text-sm font-bold tracking-widest uppercase">• Coming Soon</span>
+        <span class="mx-4 text-sm font-bold tracking-widest uppercase">• Coming Soon</span>
+        <span class="mx-4 text-sm font-bold tracking-widest uppercase">• Coming Soon</span>
+        <span class="mx-4 text-sm font-bold tracking-widest uppercase">• Coming Soon</span>
+        <span class="mx-4 text-sm font-bold tracking-widest uppercase">• Coming Soon</span>
+        <span class="mx-4 text-sm font-bold tracking-widest uppercase">• Coming Soon</span>
+        <span class="mx-4 text-sm font-bold tracking-widest uppercase">• Coming Soon</span>
+        <span class="mx-4 text-sm font-bold tracking-widest uppercase">• Coming Soon</span>
+      </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="w-full py-6 px-4 sm:px-8 max-w-7xl mx-auto flex justify-between items-center relative z-10">
+      <div class="flex items-center gap-2">
+        <!-- Replaced Logo Image with SVG -->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" class="h-16 w-16" aria-label="The Next Step Logo">
+          <defs>
+            <path id="textPath" d="M 40,100 A 60,60 0 0,1 160,100" />
+            <linearGradient id="tealGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#0f766e;stop-opacity:1" />
+              <stop offset="100%" style="stop-color:#2dd4bf;stop-opacity:1" />
+            </linearGradient>
+          </defs>
+          
+          <!-- Outer Ring/Circle (Optional, implicit in design) -->
+          <circle cx="100" cy="100" r="90" fill="none" stroke="url(#tealGradient)" stroke-width="2" opacity="0.1" />
+
+          <!-- Arched Text -->
+          <text fill="#0f766e" font-family="Inter, sans-serif" font-weight="700" font-size="18" letter-spacing="2">
+            <textPath href="#textPath" text-anchor="middle" startOffset="50%">
+              THE NEXT STEP
+            </textPath>
+          </text>
+          
+          <!-- Head Profile & Checkmark -->
+          <g transform="translate(60, 55) scale(0.8)">
+            <!-- Head Profile stylized -->
+            <path d="M48 96c-24 0-38-16-38-36c0-20 12-32 32-32c12 0 20 6 24 14c2 4 3 8 3 12c0 20-14 42-21 42z" fill="none" stroke="#0f766e" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M48 96c10 0 16-6 16-16" fill="none" stroke="#0f766e" stroke-width="6" stroke-linecap="round" />
+            <circle cx="45" cy="60" r="18" fill="none" stroke="#0f766e" stroke-width="4" />
+            <!-- Checkmark -->
+            <path d="M38 60l5 5l10-10" fill="none" stroke="#2dd4bf" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+          </g>
+        </svg>
+        <span class="sr-only">Nexio</span>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <main class="flex-grow flex items-center relative z-10 min-h-[60vh]">
+      <div class="max-w-7xl mx-auto px-4 sm:px-8 py-12 lg:py-20 w-full">
+        <div class="flex flex-col items-center text-center max-w-3xl mx-auto">
+          
+          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-serif font-bold text-stone-900 leading-tight mb-6">
+            Launch your career in <span class="text-teal-700">Psychology.</span>
+          </h1>
+          
+          <p class="text-lg text-stone-600 mb-10 leading-relaxed max-w-2xl">
+            Join the program to gain practical therapy experience, earn recognized hours, and help reduce waiting times for patients in Germany.
+          </p>
+
+          <!-- Centered Form Container -->
+          <div class="w-full max-w-md mx-auto" id="form-container">
+            <!-- Form State -->
+            <form id="waitlist-form" class="flex flex-col sm:flex-row gap-3">
+              <input
+                type="email"
+                id="email-input"
+                name="email"
+                placeholder="email"
+                required
+                pattern="[^@\s]+@[^@\s]+\.[^@\s]+"
+                title="Please enter a valid email address"
+                class="flex-grow px-4 py-3 rounded-lg border border-stone-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all disabled:opacity-50"
+              />
+              <button
+                type="submit"
+                id="submit-btn"
+                class="px-6 py-3 bg-teal-700 hover:bg-teal-800 text-white font-medium rounded-lg transition-colors shadow-sm hover:shadow flex items-center justify-center gap-2 disabled:opacity-70 whitespace-nowrap animate-vibrate-jump"
+              >
+                <span>Join Waitlist</span>
+                <i data-lucide="arrow-right" class="w-4 h-4"></i>
+              </button>
+            </button>
+            </form>
+
+            <!-- Success State (Hidden by default) -->
+            <div id="success-message" class="bg-teal-50 border border-teal-100 rounded-xl p-6 animate-fade-in text-left hidden">
+              <div class="flex items-center gap-3 text-teal-800 font-semibold mb-2">
+                <i data-lucide="check-circle" class="w-5 h-5"></i>
+                <span>Application Interest Received</span>
+              </div>
+              <p id="ai-response-text" class="text-teal-700 text-sm italic">
+                <!-- AI Message goes here -->
+              </p>
+              <button 
+                id="reset-form-btn"
+                class="mt-4 text-xs text-teal-600 hover:text-teal-800 underline"
+              >
+                Register another email
+              </button>
+            </div>
+
+            <p class="mt-4 text-xs text-stone-500">
+              Join other psychology students looking forward to making a change.
+            </p>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-stone-50 border-t border-stone-200 py-12 relative z-10">
+      <div class="max-w-7xl mx-auto px-4 sm:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
+        <p class="text-stone-500 text-sm">
+          © 2025 Nexio. All rights reserved.
+        </p>
+        <div class="flex flex-wrap justify-center gap-6 text-sm text-stone-600">
+          <button data-modal="LEGAL" class="hover:text-teal-700 transition-colors">Legal Notice</button>
+          <button data-modal="PRIVACY" class="hover:text-teal-700 transition-colors">Privacy Policy</button>
+          <button data-modal="COOKIES" class="hover:text-teal-700 transition-colors">Cookies Policy</button>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Info Modal Overlay -->
+    <div id="info-modal" class="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-stone-900/40 backdrop-blur-sm hidden">
+      <div 
+        class="bg-white rounded-2xl shadow-xl w-full max-w-2xl overflow-hidden relative flex flex-col max-h-[90vh]" 
+      >
+        <div class="flex justify-end p-4 border-b border-stone-100 bg-white sticky top-0 z-10">
+           <button 
+            id="close-modal-btn"
+            class="p-2 text-stone-400 hover:text-stone-600 hover:bg-stone-100 rounded-full transition-all"
+          >
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+        
+        <div id="modal-content" class="p-8 overflow-y-auto">
+          <!-- Dynamic Content -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Logic -->
+    <script type="module">
+      import { GoogleGenAI } from "@google/genai";
+
+      // ---------------------------------------------------------
+      // CONSTANTS & CONTENT
+      // ---------------------------------------------------------
+      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+
+      const CONTENT = {
+        LEGAL: `
+          <h2 class="text-2xl font-serif font-bold text-stone-900 mb-6 flex items-center gap-2">
+            <i data-lucide="scale" class="w-6 h-6 text-teal-700"></i>
+            Legal Notice
+          </h2>
+          <div class="space-y-4 text-stone-600 text-sm leading-relaxed">
+            <p>
+              Welcome to the website of <strong>ASOCIACION ESTUDIANTIL JUNIOR NEXIO</strong> (hereinafter NEXIO) with Tax Identification Number <strong>G75579508</strong> and address at <strong>PS/ URIBITARTE, 6 48001 BILBAO (BIZKAIA)</strong>. Contact by mail at <a href="mailto:contact@team-nexio.com" class="text-teal-600 underline">contact@team-nexio.com</a> and registered in the Registry of Associations of Bizkaia with the number AS/B/26060/2025.
+            </p>
+            <h3 class="font-bold text-stone-800 text-lg mt-4">Intellectual Property</h3>
+            <p>
+              The contents of this website, texts, images, sounds, animations, etc. as well as its graphic design and its source code are protected by Spanish legislation on intellectual and industrial property rights in favor of the companies that make up NEXIO. It is therefore prohibited its reproduction, distribution or public communication, totally or partially, without the express authorization of NEXIO.
+            </p>
+            <h3 class="font-bold text-stone-800 text-lg mt-4">Web content and links</h3>
+            <p>
+              At NEXIO we are not responsible for the misuse made of the contents of our website, being exclusive responsibility of the person who accesses them or uses them. We neither assume responsibility for the information contained on the third party´s web pages that can be accessed by links or search engines from this Web site.
+            </p>
+            <h3 class="font-bold text-stone-800 text-lg mt-4">Update and modification of the website</h3>
+            <p>
+              NEXIO, reserves the right to modify or remove, without prior notice, both the information contained on your website and its configuration and presentation, without assuming any responsibility for it.
+            </p>
+            <h3 class="font-bold text-stone-800 text-lg mt-4">Indications on technical aspects</h3>
+            <p>
+              NEXIO assumes no responsibility that can be derived from technical problems or failures in computer equipment that occur during connection to the Internet network, as well as damages that could be caused by third parties through illegitimate intrusions outside the control of NEXIO. We are also exempt from any responsibility for possible damages that the user may suffer as a result of errors, defects or omissions in the information we provide when coming from sources outside us.
+            </p>
+          </div>
+        `,
+        PRIVACY: `
+          <h2 class="text-2xl font-serif font-bold text-stone-900 mb-6 flex items-center gap-2">
+            <i data-lucide="shield" class="w-6 h-6 text-teal-700"></i>
+            Privacy Policy
+          </h2>
+          <div class="space-y-5 text-stone-600 text-sm leading-relaxed">
+            <div class="bg-stone-50 p-4 rounded-lg border border-stone-200">
+              <p><strong>Identification of the data controller:</strong></p>
+              <p>Asociación Estudiantil Junior Empresa NEXIO (hereinafter “NEXIO”)</p>
+              <p>NIF ID: G75579508</p>
+              <p>Domicile: Paseo Uribitarte 6, 48001 Bilbao (Bizkaia)</p>
+              <p>Contact: <a href="mailto:contact@team-nexio.com" class="text-teal-600 underline">contact@team-nexio.com</a></p>
+            </div>
+            <h3 class="font-bold text-stone-800 text-lg">Who is responsible for the processing of your data?</h3>
+            <p>
+              This privacy policy applies to all personal data that the data subject provides to NEXIO, as well as to any natural person interested in the activities and services that NEXIO offers through its web pages and through any other means of communication. The purpose of NEXIO’s Privacy Policy is to give transparency to information on how we process your personal data in compliance with the current data protection regulations.
+            </p>
+            <h3 class="font-bold text-stone-800 text-lg">For what purpose do we process your personal data and with what legitimacy?</h3>
+            <p>NEXIO has a Record of Processing Activities where each of the following processing carried out as the data controller are detailed:</p>
+            
+            <div class="overflow-x-auto border border-stone-200 rounded-lg">
+              <table class="min-w-full divide-y divide-stone-200">
+                <thead class="bg-stone-100">
+                  <tr>
+                    <th class="px-3 py-2 text-left text-xs font-bold text-stone-700 uppercase">Processing GDPR</th>
+                    <th class="px-3 py-2 text-left text-xs font-bold text-stone-700 uppercase">Purpose GDPR</th>
+                    <th class="px-3 py-2 text-left text-xs font-bold text-stone-700 uppercase">Legitimate Basis</th>
+                  </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-stone-200 text-xs">
+                  <tr>
+                    <td class="px-3 py-2 font-medium">MEMBERS</td>
+                    <td class="px-3 py-2">Management of personal data of members</td>
+                    <td class="px-3 py-2">Art. 6.1 b) processing is necessary for the performance of a contract to which the data subject is party...</td>
+                  </tr>
+                  <tr>
+                    <td class="px-3 py-2 font-medium">CONTACT PEOPLE</td>
+                    <td class="px-3 py-2">Management of the contacts database...</td>
+                    <td class="px-3 py-2">Art. 6.1 f) processing is necessary for the purposes of the legitimate interests...</td>
+                  </tr>
+                  <tr>
+                    <td class="px-3 py-2 font-medium">MANAGEMENT OF EVENTS</td>
+                    <td class="px-3 py-2">Registering and management of personal data...</td>
+                    <td class="px-3 py-2">Art. 6.1 a) consent; Art. 6.1 f) legitimate interests (advertising)...</td>
+                  </tr>
+                  <tr>
+                    <td class="px-3 py-2 font-medium">ACCOUNTABILITY</td>
+                    <td class="px-3 py-2">Administrative and accounting management...</td>
+                    <td class="px-3 py-2">Art. 6.1 b) processing is necessary for the performance of a contract...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <h3 class="font-bold text-stone-800 text-lg">How long do we store your personal data?</h3>
+            <p>
+              NEXIO will store the data of the data subjects during their relationship with the organization and thereafter, the data will be preserved according to the provisions of the archive and documentation regulations established by each applicable law.
+            </p>
+            <h3 class="font-bold text-stone-800 text-lg">What are the rights of those affected?</h3>
+            <ul class="list-disc pl-5 space-y-1">
+              <li>Right of access to your personal data.</li>
+              <li>Right of rectification of inaccurate data.</li>
+              <li>Right to delete your personal data.</li>
+              <li>Right to request limitation of processing.</li>
+              <li>Right to object to the processing.</li>
+              <li>Right to the portability of your data.</li>
+            </ul>
+            <p>
+              Such rights may be exercised free of charge by written request addressed to <a href="mailto:nexiocoop@gmail.com" class="text-teal-600 underline">nexiocoop@gmail.com</a>.
+            </p>
+            <h3 class="font-bold text-stone-800 text-lg">Links</h3>
+            <p>
+              The website of NEXIO may include hyperlinks to other sites. NEXIO does not guarantee nor is responsible for the lawfulness, reliability, utility, veracity and actuality of the contents of such websites or their privacy practices.
+            </p>
+            <p class="text-xs text-stone-400 mt-4">Latest update of the NEXIO Privacy Policy: 27 March 2025.</p>
+          </div>
+        `,
+        COOKIES: `
+          <h2 class="text-2xl font-serif font-bold text-stone-900 mb-6 flex items-center gap-2">
+            <i data-lucide="cookie" class="w-6 h-6 text-teal-700"></i>
+            Cookies Policy
+          </h2>
+          <div class="space-y-4 text-stone-600 text-sm leading-relaxed">
+            <p>
+              The JUNIOR ENTERPRISE STUDENT ASSOCIATION Nexio (hereinafter, Nexio) would like to inform you about the use of cookies on its websites.
+            </p>
+            <p>
+              Cookies are files that can be downloaded onto your device through web pages. They are essential tools for providing many services in the information society.
+            </p>
+            <h3 class="font-bold text-stone-800 text-lg mt-4">Cookies Used on the Website</h3>
+            <ul class="list-disc pl-5 space-y-2">
+              <li><strong>cookillian_opt_*:</strong> Stores your preferences regarding the use of cookies.</li>
+              <li><strong>wordpress_test_cookie:</strong> Determines if cookies can be stored.</li>
+              <li><strong>wp-settings-*:</strong> Remembers personal preferences within WordPress.</li>
+              <li><strong>wordpress_*:</strong> Authentication cookie for WordPress details.</li>
+            </ul>
+            <h3 class="font-bold text-stone-800 text-lg mt-4">Acceptance of the Cookie Policy</h3>
+            <p>
+              Nexio assumes that you accept the use of cookies. However, it displays information about its Cookie Policy at the bottom of any page on the website with each login so that you remain aware.
+            </p>
+            <h3 class="font-bold text-stone-800 text-lg mt-4">How to Modify Cookie Settings</h3>
+            <p>
+              You can restrict, block, or delete Nexio’s cookies through your browser. Each browser has different settings.
+            </p>
+            <ul class="list-disc pl-5 space-y-1 text-teal-600">
+              <li><a href="#" class="hover:underline">Internet Explorer: Microsoft Support</a></li>
+              <li><a href="#" class="hover:underline">Firefox: Mozilla Support</a></li>
+              <li><a href="#" class="hover:underline">Chrome: Google Support</a></li>
+              <li><a href="#" class="hover:underline">Safari: Apple Support</a></li>
+            </ul>
+          </div>
+        `
+      };
+
+      // ---------------------------------------------------------
+      // STATE & REFS
+      // ---------------------------------------------------------
+      const state = {
+        cookieStatus: localStorage.getItem('nexio_cookie_consent') || 'UNDECIDED',
+        email: ''
+      };
+
+      const els = {
+        cookieOverlay: document.getElementById('cookie-overlay'),
+        cookieTitle: document.getElementById('cookie-title'),
+        cookieDesc: document.getElementById('cookie-description'),
+        cookieActions: document.getElementById('cookie-actions'),
+        cookieIconContainer: document.getElementById('cookie-icon-container'),
+        btnReadCookiePolicy: document.getElementById('btn-read-cookie-policy'),
+        
+        infoModal: document.getElementById('info-modal'),
+        closeModalBtn: document.getElementById('close-modal-btn'),
+        modalContent: document.getElementById('modal-content'),
+        
+        form: document.getElementById('waitlist-form'),
+        emailInput: document.getElementById('email-input'),
+        submitBtn: document.getElementById('submit-btn'),
+        successMessage: document.getElementById('success-message'),
+        aiResponseText: document.getElementById('ai-response-text'),
+        resetFormBtn: document.getElementById('reset-form-btn'),
+        
+        modalTriggers: document.querySelectorAll('[data-modal]'),
+      };
+
+      // ---------------------------------------------------------
+      // COOKIE LOGIC
+      // ---------------------------------------------------------
+      function renderCookieOverlay() {
+        if (state.cookieStatus === 'ACCEPTED') {
+          els.cookieOverlay.classList.add('hidden');
+          return;
+        }
+
+        els.cookieOverlay.classList.remove('hidden');
+        els.cookieActions.innerHTML = '';
+        els.cookieIconContainer.innerHTML = '';
+
+        if (state.cookieStatus === 'UNDECIDED') {
+          // Icon
+          els.cookieIconContainer.innerHTML = `<i data-lucide="cookie" class="w-12 h-12 text-teal-600 mx-auto"></i>`;
+          
+          els.cookieTitle.textContent = "We use cookies";
+          els.cookieDesc.textContent = "We use cookies to improve your experience and analyze website traffic. You must accept our cookie policy to access the Nexio platform.";
+          
+          // Accept Button
+          const acceptBtn = document.createElement('button');
+          acceptBtn.className = "w-full py-3 bg-teal-700 hover:bg-teal-800 text-white font-medium rounded-lg transition-colors shadow-lg";
+          acceptBtn.textContent = "Accept Cookies";
+          acceptBtn.onclick = handleAcceptCookies;
+          
+          // Reject Button
+          const rejectBtn = document.createElement('button');
+          rejectBtn.className = "w-full py-3 bg-white border border-stone-300 text-stone-600 hover:bg-stone-50 font-medium rounded-lg transition-colors";
+          rejectBtn.textContent = "Do not accept";
+          rejectBtn.onclick = handleRejectCookies;
+
+          els.cookieActions.append(acceptBtn, rejectBtn);
+
+        } else if (state.cookieStatus === 'REJECTED') {
+          // Icon
+          els.cookieIconContainer.innerHTML = `<div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto"><i data-lucide="x" class="w-8 h-8 text-red-500"></i></div>`;
+          
+          els.cookieTitle.textContent = "Access Restricted";
+          els.cookieDesc.textContent = "You have chosen not to accept cookies. Unfortunately, you cannot access the Nexio website without accepting our cookie policy.";
+          
+          // Change Mind Button
+          const changeMindBtn = document.createElement('button');
+          changeMindBtn.className = "w-full py-3 bg-teal-700 hover:bg-teal-800 text-white font-medium rounded-lg transition-colors shadow-lg";
+          changeMindBtn.textContent = "I changed my mind, Accept Cookies";
+          changeMindBtn.onclick = handleAcceptCookies;
+          
+          els.cookieActions.append(changeMindBtn);
+        }
+        
+        lucide.createIcons();
+      }
+
+      function handleAcceptCookies() {
+        state.cookieStatus = 'ACCEPTED';
+        localStorage.setItem('nexio_cookie_consent', 'ACCEPTED');
+        renderCookieOverlay();
+      }
+
+      function handleRejectCookies() {
+        state.cookieStatus = 'REJECTED';
+        // Note: We don't necessarily save 'REJECTED' to localStorage here so they can re-decide on reload if desired, 
+        // but the prompt logic says blocking state.
+        renderCookieOverlay();
+      }
+
+      els.btnReadCookiePolicy.onclick = () => openModal('COOKIES');
+
+      // ---------------------------------------------------------
+      // MODAL LOGIC
+      // ---------------------------------------------------------
+      function openModal(type) {
+        if (!CONTENT[type]) return;
+        
+        els.modalContent.innerHTML = CONTENT[type];
+        els.infoModal.classList.remove('hidden');
+        lucide.createIcons();
+      }
+
+      function closeModal() {
+        els.infoModal.classList.add('hidden');
+      }
+
+      els.closeModalBtn.onclick = closeModal;
+      els.infoModal.onclick = (e) => {
+        if (e.target === els.infoModal) closeModal();
+      }
+
+      els.modalTriggers.forEach(btn => {
+        btn.addEventListener('click', () => {
+          openModal(btn.dataset.modal);
+        });
+      });
+
+      // ---------------------------------------------------------
+      // FORM LOGIC
+      // ---------------------------------------------------------
+      async function generateWelcomeMessage() {
+        try {
+          const response = await ai.models.generateContent({
+            model: 'gemini-2.5-flash',
+            contents: "Generate a professional, encouraging, and short one-sentence 'Thank you' message for a psychology master's student who just applied for a clinical internship program at Nexio. Do not use quotes.",
+          });
+          return response.text || "Thank you for applying to the internship program.";
+        } catch (error) {
+          console.error("Error generating welcome message:", error);
+          return "Thank you for your interest. We will be in touch soon.";
+        }
+      }
+
+      els.form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = els.emailInput.value;
+        if (!email) return;
+
+        // Set Loading State
+        const originalBtnContent = els.submitBtn.innerHTML;
+        els.submitBtn.disabled = true;
+        els.submitBtn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i><span>Sending...</span>`;
+        lucide.createIcons();
+
+        try {
+          // Send to Formspree
+          const formResponse = await fetch("https://formspree.io/f/xpwyojap", {
+            method: "POST",
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+            body: JSON.stringify({ email: email })
+          });
+
+          if (!formResponse.ok) {
+             throw new Error("Form submission failed");
+          }
+
+          // Get AI Message
+          const aiMessage = await generateWelcomeMessage();
+          
+          // Show Success
+          els.form.classList.add('hidden');
+          els.successMessage.classList.remove('hidden');
+          els.aiResponseText.textContent = `"${aiMessage}"`;
+
+        } catch (error) {
+          console.error(error);
+          alert("Something went wrong. Please try again.");
+        } finally {
+          els.submitBtn.disabled = false;
+          els.submitBtn.innerHTML = originalBtnContent;
+          lucide.createIcons();
+        }
+      });
+
+      els.resetFormBtn.addEventListener('click', () => {
+        els.emailInput.value = '';
+        els.successMessage.classList.add('hidden');
+        els.form.classList.remove('hidden');
+      });
+
+      // ---------------------------------------------------------
+      // INIT
+      // ---------------------------------------------------------
+      renderCookieOverlay();
+      lucide.createIcons();
+
+    </script>
+  </body>
+</html>
