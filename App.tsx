@@ -1,10 +1,13 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { SubmissionStatus } from './types';
-import { generateWelcomeMessage } from './services/geminiService';
+import { GoogleGenAI } from "@google/genai";
 import { CheckCircle, ArrowRight, Loader2, X, Cookie, Shield, Scale, FileText } from 'lucide-react';
 
 type ModalType = 'LEGAL' | 'PRIVACY' | 'COOKIES' | null;
 type CookieConsentStatus = 'UNDECIDED' | 'ACCEPTED' | 'REJECTED';
+
+// Initialize Gemini
+const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 const App: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -45,7 +48,7 @@ const App: React.FC = () => {
 
     try {
       // Send email to Formspree
-      const response = await fetch("https://formspree.io/f/xpwyojap", {
+      const response = await fetch("https://formspree.io/f/xldqwnej", {
         method: "POST",
         headers: {
           'Content-Type': 'application/json',
@@ -59,8 +62,17 @@ const App: React.FC = () => {
       }
       
       // Call Gemini for a dynamic welcome message
-      const aiMessage = await generateWelcomeMessage();
-      setWelcomeMessage(aiMessage);
+      try {
+        const aiResponse = await ai.models.generateContent({
+          model: 'gemini-2.5-flash',
+          contents: "Generate a professional, encouraging, and short one-sentence 'Thank you' message for a psychology master's student who just applied for a clinical internship program at Nexio. Do not use quotes.",
+        });
+        const aiMessage = aiResponse.text || "Thank you for applying to the internship program.";
+        setWelcomeMessage(aiMessage);
+      } catch (error) {
+        console.error("Gemini Error:", error);
+        setWelcomeMessage("Thank you for your interest. We will be in touch soon.");
+      }
       
       setStatus(SubmissionStatus.SUCCESS);
       setEmail('');
@@ -396,7 +408,12 @@ const App: React.FC = () => {
                   </button>
                 </div>
               ) : (
-                <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3">
+                <form 
+                  onSubmit={handleSubmit} 
+                  action="https://formspree.io/f/xldqwnej"
+                  method="POST"
+                  className="flex flex-col sm:flex-row gap-3"
+                >
                   <input
                     type="email"
                     name="email"

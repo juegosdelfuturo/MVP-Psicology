@@ -235,7 +235,12 @@
           <!-- Centered Form Container -->
           <div class="w-full max-w-md mx-auto" id="form-container">
             <!-- Form State -->
-            <form id="waitlist-form" class="flex flex-col sm:flex-row gap-3">
+            <form 
+              id="waitlist-form" 
+              class="flex flex-col sm:flex-row gap-3"
+              action="https://formspree.io/f/xldqwnej"
+              method="POST"
+            >
               <input
                 type="email"
                 id="email-input"
@@ -619,7 +624,7 @@
 
         try {
           // Send to Formspree
-          const formResponse = await fetch("https://formspree.io/f/xpwyojap", {
+          const formResponse = await fetch("https://formspree.io/f/xldqwnej", {
             method: "POST",
             headers: {
               'Content-Type': 'application/json',
