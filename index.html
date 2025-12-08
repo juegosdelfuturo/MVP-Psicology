@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Nexio - Mental Health Support Germany</title>
+    <title>Nexio - Affordable Mental Health Support</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -161,16 +161,8 @@
         <span class="mx-4 text-sm font-bold tracking-widest uppercase">• Coming Soon</span>
         <span class="mx-4 text-sm font-bold tracking-widest uppercase">• Coming Soon</span>
         <span class="mx-4 text-sm font-bold tracking-widest uppercase">• Coming Soon</span>
-        <span class="mx-4 text-sm font-bold tracking-widest uppercase">• Coming Soon</span>
-        <span class="mx-4 text-sm font-bold tracking-widest uppercase">• Coming Soon</span>
-        <span class="mx-4 text-sm font-bold tracking-widest uppercase">• Coming Soon</span>
-        <span class="mx-4 text-sm font-bold tracking-widest uppercase">• Coming Soon</span>
       </div>
       <div class="animate-marquee inline-block absolute top-3 left-0">
-        <span class="mx-4 text-sm font-bold tracking-widest uppercase">• Coming Soon</span>
-        <span class="mx-4 text-sm font-bold tracking-widest uppercase">• Coming Soon</span>
-        <span class="mx-4 text-sm font-bold tracking-widest uppercase">• Coming Soon</span>
-        <span class="mx-4 text-sm font-bold tracking-widest uppercase">• Coming Soon</span>
         <span class="mx-4 text-sm font-bold tracking-widest uppercase">• Coming Soon</span>
         <span class="mx-4 text-sm font-bold tracking-widest uppercase">• Coming Soon</span>
         <span class="mx-4 text-sm font-bold tracking-widest uppercase">• Coming Soon</span>
@@ -225,11 +217,12 @@
         <div class="flex flex-col items-center text-center max-w-3xl mx-auto">
           
           <h1 class="text-4xl sm:text-5xl lg:text-6xl font-serif font-bold text-stone-900 leading-tight mb-6">
-            Launch your career in <span class="text-teal-700">Psychology.</span>
+            Find your peace. <br/><span class="text-teal-700">Without the financial stress.</span>
           </h1>
           
           <p class="text-lg text-stone-600 mb-10 leading-relaxed max-w-2xl">
-            Join the program to gain practical therapy experience, earn recognized hours, and help reduce waiting times for patients in Germany.
+            We connect you with supervised psychology master's students for effective, supportive therapy sessions. 
+            <span class="block mt-2 font-medium text-teal-800">High-quality care for just €20/session.</span>
           </p>
 
           <!-- Centered Form Container -->
@@ -237,36 +230,43 @@
             <!-- Form State -->
             <form 
               id="waitlist-form" 
-              class="flex flex-col sm:flex-row gap-3"
+              class="flex flex-col gap-3"
               action="https://formspree.io/f/xldqwnej"
               method="POST"
             >
               <input
+                type="text"
+                id="name-input"
+                name="name"
+                placeholder="Your full name"
+                required
+                class="w-full px-4 py-3 rounded-lg border border-stone-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all disabled:opacity-50"
+              />
+              <input
                 type="email"
                 id="email-input"
                 name="email"
-                placeholder="email"
+                placeholder="Your email address"
                 required
                 pattern="[^@\s]+@[^@\s]+\.[^@\s]+"
                 title="Please enter a valid email address"
-                class="flex-grow px-4 py-3 rounded-lg border border-stone-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all disabled:opacity-50"
+                class="w-full px-4 py-3 rounded-lg border border-stone-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all disabled:opacity-50"
               />
               <button
                 type="submit"
                 id="submit-btn"
-                class="px-6 py-3 bg-teal-700 hover:bg-teal-800 text-white font-medium rounded-lg transition-colors shadow-sm hover:shadow flex items-center justify-center gap-2 disabled:opacity-70 whitespace-nowrap animate-vibrate-jump"
+                class="w-full px-6 py-3 bg-teal-700 hover:bg-teal-800 text-white font-medium rounded-lg transition-colors shadow-sm hover:shadow flex items-center justify-center gap-2 disabled:opacity-70 animate-vibrate-jump"
               >
-                <span>Join Waitlist</span>
+                <span>Join the Waiting List</span>
                 <i data-lucide="arrow-right" class="w-4 h-4"></i>
               </button>
-            </button>
             </form>
 
             <!-- Success State (Hidden by default) -->
             <div id="success-message" class="bg-teal-50 border border-teal-100 rounded-xl p-6 animate-fade-in text-left hidden">
               <div class="flex items-center gap-3 text-teal-800 font-semibold mb-2">
-                <i data-lucide="check-circle" class="w-5 h-5"></i>
-                <span>Application Interest Received</span>
+                <i data-lucide="heart-handshake" class="w-5 h-5"></i>
+                <span>You're on the list!</span>
               </div>
               <p id="ai-response-text" class="text-teal-700 text-sm italic">
                 <!-- AI Message goes here -->
@@ -275,12 +275,12 @@
                 id="reset-form-btn"
                 class="mt-4 text-xs text-teal-600 hover:text-teal-800 underline"
               >
-                Register another email
+                Register another person
               </button>
             </div>
 
             <p class="mt-4 text-xs text-stone-500">
-              Join other psychology students looking forward to making a change.
+              Your mental health matters. Secure your spot for affordable care.
             </p>
           </div>
         </div>
@@ -328,8 +328,6 @@
       // ---------------------------------------------------------
       // CONSTANTS & CONTENT
       // ---------------------------------------------------------
-      // Note: We delay AI initialization to avoid crashes on environments without process.env (like GitHub Pages)
-
       const CONTENT = {
         LEGAL: `
           <h2 class="text-2xl font-serif font-bold text-stone-900 mb-6 flex items-center gap-2">
@@ -492,6 +490,7 @@
         modalContent: document.getElementById('modal-content'),
         
         form: document.getElementById('waitlist-form'),
+        nameInput: document.getElementById('name-input'),
         emailInput: document.getElementById('email-input'),
         submitBtn: document.getElementById('submit-btn'),
         successMessage: document.getElementById('success-message'),
@@ -562,8 +561,6 @@
 
       function handleRejectCookies() {
         state.cookieStatus = 'REJECTED';
-        // Note: We don't necessarily save 'REJECTED' to localStorage here so they can re-decide on reload if desired, 
-        // but the prompt logic says blocking state.
         renderCookieOverlay();
       }
 
@@ -598,10 +595,8 @@
       // ---------------------------------------------------------
       // FORM LOGIC
       // ---------------------------------------------------------
-      async function generateWelcomeMessage() {
+      async function generateWelcomeMessage(userName) {
         try {
-          // Check if process is available (it isn't on GitHub pages usually)
-          // If the key is missing or process is undefined, we catch the error below.
           let key;
           try {
              key = process.env.API_KEY;
@@ -614,20 +609,24 @@
           }
 
           const ai = new GoogleGenAI({ apiKey: key });
+          // UPDATED PROMPT: Targeted at patients seeking help
+          const prompt = `Generate a very short, comforting, and professional thank you message for someone named "${userName || 'Friend'}" who has just signed up for an affordable therapy waitlist. Ensure them that they are taking a brave step towards wellness. Do not use quotes.`;
+          
           const response = await ai.models.generateContent({
             model: 'gemini-2.5-flash',
-            contents: "Generate a professional, encouraging, and short one-sentence 'Thank you' message for a psychology master's student who just applied for a clinical internship program at Nexio. Do not use quotes.",
+            contents: prompt,
           });
-          return response.text || "Thank you for applying to the internship program.";
+          return response.text || "Thank you for joining. We are here to support your journey.";
         } catch (error) {
           console.error("Error generating welcome message (likely missing API key on static host):", error);
-          return "Thank you for your interest. We will be in touch soon.";
+          return "Thank you for your trust. We will be in touch soon.";
         }
       }
 
       els.form.addEventListener('submit', async (e) => {
         e.preventDefault();
         const email = els.emailInput.value;
+        const name = els.nameInput.value;
         if (!email) return;
 
         // Set Loading State
@@ -644,7 +643,7 @@
               'Content-Type': 'application/json',
               'Accept': 'application/json'
             },
-            body: JSON.stringify({ email: email })
+            body: JSON.stringify({ name: name, email: email })
           });
 
           if (!formResponse.ok) {
@@ -652,7 +651,7 @@
           }
 
           // Get AI Message
-          const aiMessage = await generateWelcomeMessage();
+          const aiMessage = await generateWelcomeMessage(name);
           
           // Show Success
           els.form.classList.add('hidden');
@@ -671,6 +670,7 @@
 
       els.resetFormBtn.addEventListener('click', () => {
         els.emailInput.value = '';
+        els.nameInput.value = '';
         els.successMessage.classList.add('hidden');
         els.form.classList.remove('hidden');
       });

@@ -1,13 +1,14 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { SubmissionStatus } from './types';
 import { GoogleGenAI } from "@google/genai";
-import { CheckCircle, ArrowRight, Loader2, X, Cookie, Shield, Scale, FileText } from 'lucide-react';
+import { CheckCircle, ArrowRight, Loader2, X, Cookie, Shield, Scale, FileText, HeartHandshake } from 'lucide-react';
 
 type ModalType = 'LEGAL' | 'PRIVACY' | 'COOKIES' | null;
 type CookieConsentStatus = 'UNDECIDED' | 'ACCEPTED' | 'REJECTED';
 
 const App: React.FC = () => {
   const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
   const [status, setStatus] = useState<SubmissionStatus>(SubmissionStatus.IDLE);
   const [welcomeMessage, setWelcomeMessage] = useState<string>('');
   const [activeModal, setActiveModal] = useState<ModalType>(null);
@@ -30,16 +31,12 @@ const App: React.FC = () => {
   };
 
   const handleRejectCookies = () => {
-    // We do not save rejection to local storage immediately to ensure the 'blocked' state 
-    // is temporary for the session or until they accept, as requested. 
-    // Or we can save it, but the UI must remain blocked.
-    // Setting state to REJECTED triggers the blocking view.
     setCookieStatus('REJECTED');
   };
 
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email) return;
+    if (!email || !name) return;
 
     setStatus(SubmissionStatus.LOADING);
 
@@ -51,7 +48,7 @@ const App: React.FC = () => {
           'Content-Type': 'application/json',
           'Accept': 'application/json'
         },
-        body: JSON.stringify({ email })
+        body: JSON.stringify({ name, email })
       });
 
       if (!response.ok) {
@@ -72,28 +69,31 @@ const App: React.FC = () => {
       if (apiKey) {
         try {
           const ai = new GoogleGenAI({ apiKey });
+          // UPDATED PROMPT: Targeted at patients
+          const prompt = `Generate a very short, comforting, and professional thank you message for someone named "${name}" who has just signed up for an affordable therapy waitlist. Ensure them that they are taking a brave step towards wellness. Do not use quotes.`;
           const aiResponse = await ai.models.generateContent({
             model: 'gemini-2.5-flash',
-            contents: "Generate a professional, encouraging, and short one-sentence 'Thank you' message for a psychology master's student who just applied for a clinical internship program at Nexio. Do not use quotes.",
+            contents: prompt,
           });
-          const aiMessage = aiResponse.text || "Thank you for applying to the internship program.";
+          const aiMessage = aiResponse.text || "Thank you for joining. We are here to support your journey.";
           setWelcomeMessage(aiMessage);
         } catch (error) {
           console.error("Gemini Error:", error);
-          setWelcomeMessage("Thank you for your interest. We will be in touch soon.");
+          setWelcomeMessage("Thank you for your trust. We will be in touch soon.");
         }
       } else {
          // Fallback if no key is present
-         setWelcomeMessage("Thank you for your interest. We will be in touch soon.");
+         setWelcomeMessage("Thank you for your trust. We will be in touch soon.");
       }
       
       setStatus(SubmissionStatus.SUCCESS);
       setEmail('');
+      setName('');
     } catch (error) {
       console.error(error);
       setStatus(SubmissionStatus.ERROR);
     }
-  }, [email]);
+  }, [email, name]);
 
   const closeModal = () => setActiveModal(null);
 
@@ -339,16 +339,8 @@ const App: React.FC = () => {
           <span className="mx-4 text-sm font-bold tracking-widest uppercase">• Coming Soon</span>
           <span className="mx-4 text-sm font-bold tracking-widest uppercase">• Coming Soon</span>
           <span className="mx-4 text-sm font-bold tracking-widest uppercase">• Coming Soon</span>
-          <span className="mx-4 text-sm font-bold tracking-widest uppercase">• Coming Soon</span>
-          <span className="mx-4 text-sm font-bold tracking-widest uppercase">• Coming Soon</span>
-          <span className="mx-4 text-sm font-bold tracking-widest uppercase">• Coming Soon</span>
-          <span className="mx-4 text-sm font-bold tracking-widest uppercase">• Coming Soon</span>
         </div>
         <div className="animate-marquee inline-block absolute top-3 left-0">
-          <span className="mx-4 text-sm font-bold tracking-widest uppercase">• Coming Soon</span>
-          <span className="mx-4 text-sm font-bold tracking-widest uppercase">• Coming Soon</span>
-          <span className="mx-4 text-sm font-bold tracking-widest uppercase">• Coming Soon</span>
-          <span className="mx-4 text-sm font-bold tracking-widest uppercase">• Coming Soon</span>
           <span className="mx-4 text-sm font-bold tracking-widest uppercase">• Coming Soon</span>
           <span className="mx-4 text-sm font-bold tracking-widest uppercase">• Coming Soon</span>
           <span className="mx-4 text-sm font-bold tracking-widest uppercase">• Coming Soon</span>
@@ -390,16 +382,17 @@ const App: React.FC = () => {
       </nav>
 
       {/* Hero Section */}
-      <main className="flex-grow flex items-center relative z-10">
+      <main className="flex-grow flex items-center relative z-10 min-h-[60vh]">
         <div className="max-w-7xl mx-auto px-4 sm:px-8 py-12 lg:py-20 w-full">
           <div className="flex flex-col items-center text-center max-w-3xl mx-auto">
             
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-serif font-bold text-stone-900 leading-tight mb-6">
-              Launch your career in <span className="text-teal-700">Psychology.</span>
+              Find your peace. <br/><span className="text-teal-700">Without the financial stress.</span>
             </h1>
             
             <p className="text-lg text-stone-600 mb-10 leading-relaxed max-w-2xl">
-              Join the program to gain practical therapy experience, earn recognized hours, and help reduce waiting times for patients in Germany.
+              We connect you with supervised psychology master's students for effective, supportive therapy sessions. 
+              <span className="block mt-2 font-medium text-teal-800">High-quality care for just €20/session.</span>
             </p>
 
             {/* Centered Form */}
@@ -407,8 +400,8 @@ const App: React.FC = () => {
               {status === SubmissionStatus.SUCCESS ? (
                 <div className="bg-teal-50 border border-teal-100 rounded-xl p-6 animate-fade-in text-left">
                   <div className="flex items-center gap-3 text-teal-800 font-semibold mb-2">
-                    <CheckCircle className="w-5 h-5" />
-                    <span>Application Interest Received</span>
+                    <HeartHandshake className="w-5 h-5" />
+                    <span>You're on the list!</span>
                   </div>
                   <p className="text-teal-700 text-sm italic">
                     "{welcomeMessage}"
@@ -417,7 +410,7 @@ const App: React.FC = () => {
                     onClick={() => setStatus(SubmissionStatus.IDLE)}
                     className="mt-4 text-xs text-teal-600 hover:text-teal-800 underline"
                   >
-                    Register another email
+                    Register another person
                   </button>
                 </div>
               ) : (
@@ -425,24 +418,34 @@ const App: React.FC = () => {
                   onSubmit={handleSubmit} 
                   action="https://formspree.io/f/xldqwnej"
                   method="POST"
-                  className="flex flex-col sm:flex-row gap-3"
+                  className="flex flex-col gap-3"
                 >
+                  <input
+                    type="text"
+                    name="name"
+                    placeholder="Your full name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    required
+                    disabled={status === SubmissionStatus.LOADING}
+                    className="w-full px-4 py-3 rounded-lg border border-stone-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all disabled:opacity-50"
+                  />
                   <input
                     type="email"
                     name="email"
-                    placeholder="email"
+                    placeholder="Your email address"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
                     pattern="[^@\s]+@[^@\s]+\.[^@\s]+"
                     title="Please enter a valid email address"
                     disabled={status === SubmissionStatus.LOADING}
-                    className="flex-grow px-4 py-3 rounded-lg border border-stone-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all disabled:opacity-50"
+                    className="w-full px-4 py-3 rounded-lg border border-stone-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all disabled:opacity-50"
                   />
                   <button
                     type="submit"
                     disabled={status === SubmissionStatus.LOADING}
-                    className="px-6 py-3 bg-teal-700 hover:bg-teal-800 text-white font-medium rounded-lg transition-colors shadow-sm hover:shadow flex items-center justify-center gap-2 disabled:opacity-70 whitespace-nowrap animate-vibrate-jump"
+                    className="w-full px-6 py-3 bg-teal-700 hover:bg-teal-800 text-white font-medium rounded-lg transition-colors shadow-sm hover:shadow flex items-center justify-center gap-2 disabled:opacity-70 whitespace-nowrap animate-vibrate-jump"
                   >
                     {status === SubmissionStatus.LOADING ? (
                       <>
@@ -451,7 +454,7 @@ const App: React.FC = () => {
                       </>
                     ) : (
                       <>
-                        <span>Join Waitlist</span>
+                        <span>Join the Waiting List</span>
                         <ArrowRight className="w-4 h-4" />
                       </>
                     )}
@@ -459,7 +462,7 @@ const App: React.FC = () => {
                 </form>
               )}
               <p className="mt-4 text-xs text-stone-500">
-                Join other psychology students looking forward to making a change.
+                Your mental health matters. Secure your spot for affordable care.
               </p>
             </div>
           </div>
