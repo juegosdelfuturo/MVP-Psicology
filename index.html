@@ -328,7 +328,7 @@
       // ---------------------------------------------------------
       // CONSTANTS & CONTENT
       // ---------------------------------------------------------
-      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+      // Note: We delay AI initialization to avoid crashes on environments without process.env (like GitHub Pages)
 
       const CONTENT = {
         LEGAL: `
@@ -600,13 +600,27 @@
       // ---------------------------------------------------------
       async function generateWelcomeMessage() {
         try {
+          // Check if process is available (it isn't on GitHub pages usually)
+          // If the key is missing or process is undefined, we catch the error below.
+          let key;
+          try {
+             key = process.env.API_KEY;
+          } catch(e) {
+             console.warn("API Key not found or process not defined");
+          }
+          
+          if (!key) {
+             throw new Error("No API Key");
+          }
+
+          const ai = new GoogleGenAI({ apiKey: key });
           const response = await ai.models.generateContent({
             model: 'gemini-2.5-flash',
             contents: "Generate a professional, encouraging, and short one-sentence 'Thank you' message for a psychology master's student who just applied for a clinical internship program at Nexio. Do not use quotes.",
           });
           return response.text || "Thank you for applying to the internship program.";
         } catch (error) {
-          console.error("Error generating welcome message:", error);
+          console.error("Error generating welcome message (likely missing API key on static host):", error);
           return "Thank you for your interest. We will be in touch soon.";
         }
       }

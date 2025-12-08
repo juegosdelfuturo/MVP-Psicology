@@ -6,9 +6,6 @@ import { CheckCircle, ArrowRight, Loader2, X, Cookie, Shield, Scale, FileText } 
 type ModalType = 'LEGAL' | 'PRIVACY' | 'COOKIES' | null;
 type CookieConsentStatus = 'UNDECIDED' | 'ACCEPTED' | 'REJECTED';
 
-// Initialize Gemini
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-
 const App: React.FC = () => {
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState<SubmissionStatus>(SubmissionStatus.IDLE);
@@ -62,16 +59,32 @@ const App: React.FC = () => {
       }
       
       // Call Gemini for a dynamic welcome message
+      // Safe check for API Key env var (prevents crash on static hosts)
+      let apiKey = '';
       try {
-        const aiResponse = await ai.models.generateContent({
-          model: 'gemini-2.5-flash',
-          contents: "Generate a professional, encouraging, and short one-sentence 'Thank you' message for a psychology master's student who just applied for a clinical internship program at Nexio. Do not use quotes.",
-        });
-        const aiMessage = aiResponse.text || "Thank you for applying to the internship program.";
-        setWelcomeMessage(aiMessage);
-      } catch (error) {
-        console.error("Gemini Error:", error);
-        setWelcomeMessage("Thank you for your interest. We will be in touch soon.");
+        if (typeof process !== 'undefined' && process.env && process.env.API_KEY) {
+           apiKey = process.env.API_KEY;
+        }
+      } catch (e) {
+        console.warn("Env not available");
+      }
+
+      if (apiKey) {
+        try {
+          const ai = new GoogleGenAI({ apiKey });
+          const aiResponse = await ai.models.generateContent({
+            model: 'gemini-2.5-flash',
+            contents: "Generate a professional, encouraging, and short one-sentence 'Thank you' message for a psychology master's student who just applied for a clinical internship program at Nexio. Do not use quotes.",
+          });
+          const aiMessage = aiResponse.text || "Thank you for applying to the internship program.";
+          setWelcomeMessage(aiMessage);
+        } catch (error) {
+          console.error("Gemini Error:", error);
+          setWelcomeMessage("Thank you for your interest. We will be in touch soon.");
+        }
+      } else {
+         // Fallback if no key is present
+         setWelcomeMessage("Thank you for your interest. We will be in touch soon.");
       }
       
       setStatus(SubmissionStatus.SUCCESS);
