@@ -287,7 +287,7 @@ Durch Fortfahren akzeptieren Sie die Cookie-Verwendung.
 
 Einstellungen ändern:
 Sie können Cookies über Ihre Browsereinstellungen (Chrome, Firefox, Safari) oder Tools wie Ghostery blockieren.`,
-    close: "Schließen"
+    close: "Close"
   }
 };
 
@@ -306,25 +306,23 @@ const App: React.FC = () => {
     const detectLang = async () => {
       try {
         const response = await fetch('https://ipapi.co/json/');
-        const data = await response.json();
-        const country = data.country_code?.toLowerCase();
-        
-        const spanishCountries = ['es', 'mx', 'ar', 'co', 'cl', 'pe', 've', 'ec'];
-        const germanCountries = ['de', 'at', 'ch'];
+        if (response.ok) {
+          const data = await response.json();
+          const country = data.country_code?.toLowerCase();
+          
+          const spanishCountries = ['es', 'mx', 'ar', 'co', 'cl', 'pe', 've', 'ec'];
+          const germanCountries = ['de', 'at', 'ch'];
 
-        if (spanishCountries.includes(country)) setLang('es');
-        else if (germanCountries.includes(country)) setLang('de');
-        else {
-          const browserLang = navigator.language.split('-')[0];
-          if (['en', 'es', 'de'].includes(browserLang)) {
-            setLang(browserLang as Language);
-          } else {
-            setLang('en');
-          }
+          if (spanishCountries.includes(country)) setLang('es');
+          else if (germanCountries.includes(country)) setLang('de');
         }
       } catch (err) {
         const browserLang = navigator.language.split('-')[0];
-        setLang(['en', 'es', 'de'].includes(browserLang) ? browserLang as Language : 'en');
+        if (['en', 'es', 'de'].includes(browserLang)) {
+          setLang(browserLang as Language);
+        } else {
+          setLang('en');
+        }
       }
     };
     
@@ -361,12 +359,13 @@ const App: React.FC = () => {
       const ai = new GoogleGenAI({ apiKey });
       const prompt = t.aiPrompt(name);
       const aiResponse = await ai.models.generateContent({
-        model: 'gemini-2.5-flash',
+        model: 'gemini-3-flash-preview',
         contents: prompt,
       });
       setWelcomeMessage(aiResponse.text || "Thank you.");
       setStatus(SubmissionStatus.SUCCESS);
     } catch (error) {
+      console.error(error);
       setStatus(SubmissionStatus.ERROR);
     }
   }, [email, name, lang, t]);
@@ -383,7 +382,7 @@ const App: React.FC = () => {
     }
 
     return (
-      <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-stone-900/60 backdrop-blur-sm animate-fade-in">
+      <div className="fixed inset-0 z-[500] flex items-center justify-center p-4 bg-stone-900/60 backdrop-blur-sm animate-fade-in">
         <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full p-8 border border-stone-200 overflow-y-auto max-h-[90vh]">
           <div className="flex justify-between items-center mb-6 sticky top-0 bg-white pb-4 border-b border-stone-100">
             <h2 className="text-2xl font-serif font-bold text-stone-900">{title}</h2>
@@ -408,7 +407,9 @@ const App: React.FC = () => {
   if (cookieStatus === 'REJECTED') {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-stone-50 font-sans relative overflow-hidden">
-        <div className="ocean"><div className="wave"></div><div className="wave"></div></div>
+        <div className="absolute inset-0 z-0 pointer-events-none opacity-50">
+          <div className="ocean"><div className="wave"></div><div className="wave"></div></div>
+        </div>
         <div className="max-w-md w-full bg-white rounded-2xl shadow-2xl p-8 text-center animate-fade-in border border-stone-200 relative z-10">
           <ShieldAlert className="w-16 h-16 text-rose-500 mx-auto mb-6" />
           <h1 className="text-3xl font-serif font-bold text-stone-900 mb-4">{t.restrictedTitle}</h1>
@@ -429,11 +430,15 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col font-sans relative bg-stone-50 overflow-x-hidden">
-      <div className="ocean"><div className="wave"></div><div className="wave"></div></div>
+      {/* Fixed Background Layer */}
+      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden select-none">
+        <div className="ocean"><div className="wave"></div><div className="wave"></div></div>
+      </div>
+
       {renderModal()}
 
       {cookieStatus === 'UNDECIDED' && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-stone-900/95 backdrop-blur-md">
+        <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-stone-900/95 backdrop-blur-md">
           <div className="bg-white rounded-xl shadow-2xl max-w-md w-full p-8 text-center animate-fade-in border border-stone-200">
             <Cookie className="w-12 h-12 text-teal-600 mx-auto mb-4" />
             <h2 className="text-2xl font-serif font-bold text-stone-900 mb-2">{t.cookieTitle}</h2>
@@ -456,7 +461,8 @@ const App: React.FC = () => {
         </div>
       )}
 
-      <div className="bg-teal-900 text-teal-50 py-3 overflow-hidden relative z-10">
+      {/* Marquee Banner */}
+      <div className="bg-teal-900 text-teal-50 py-3 overflow-hidden relative z-[50]">
         <div className="animate-marquee inline-block whitespace-nowrap">
           <span className="mx-8 text-sm font-bold tracking-widest uppercase">• {t.comingSoon}</span>
           <span className="mx-8 text-sm font-bold tracking-widest uppercase">• {t.comingSoon}</span>
@@ -465,7 +471,8 @@ const App: React.FC = () => {
         </div>
       </div>
 
-      <nav className="w-full py-6 px-4 sm:px-8 max-w-7xl mx-auto flex justify-between items-center relative z-10">
+      {/* Navigation */}
+      <nav className="w-full py-6 px-4 sm:px-8 max-w-7xl mx-auto flex justify-between items-center relative z-[60]">
         <div className="flex items-center gap-2">
           <svg viewBox="0 0 200 200" className="h-12 w-12" aria-label="Pluravita Logo">
             <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -480,17 +487,18 @@ const App: React.FC = () => {
           </svg>
           <span className="text-xl font-serif font-bold tracking-widest text-teal-900">PLURAVITA</span>
         </div>
-        <div className="flex items-center gap-2 text-stone-400 text-xs font-medium uppercase tracking-tighter bg-white/50 px-3 py-1.5 rounded-full border border-stone-100 backdrop-blur-sm">
+        <div className="flex items-center gap-2 text-stone-400 text-xs font-medium uppercase tracking-tighter bg-white/70 px-3 py-1.5 rounded-full border border-stone-100 backdrop-blur-sm shadow-sm">
           <Globe className="w-3 h-3" />
-          <button onClick={() => setLang('en')} className={`${lang === 'en' ? 'text-teal-700 font-bold' : ''}`}>EN</button>
+          <button onClick={() => setLang('en')} className={`${lang === 'en' ? 'text-teal-700 font-bold' : ''} hover:text-stone-600 transition-colors`}>EN</button>
           <span>/</span>
-          <button onClick={() => setLang('es')} className={`${lang === 'es' ? 'text-teal-700 font-bold' : ''}`}>ES</button>
+          <button onClick={() => setLang('es')} className={`${lang === 'es' ? 'text-teal-700 font-bold' : ''} hover:text-stone-600 transition-colors`}>ES</button>
           <span>/</span>
-          <button onClick={() => setLang('de')} className={`${lang === 'de' ? 'text-teal-700 font-bold' : ''}`}>DE</button>
+          <button onClick={() => setLang('de')} className={`${lang === 'de' ? 'text-teal-700 font-bold' : ''} hover:text-stone-600 transition-colors`}>DE</button>
         </div>
       </nav>
 
-      <main className="flex-grow flex items-center relative z-10 min-h-[60vh]">
+      {/* Hero / Form Section */}
+      <main className="flex-grow flex flex-col justify-center items-center relative z-[100] min-h-[60vh] pb-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-8 py-12 text-center w-full">
           <h1 className="text-4xl sm:text-6xl font-serif font-bold text-stone-900 mb-6 leading-tight">
             {t.title1} <br/><span className="text-teal-700">{t.title2}</span>
@@ -500,7 +508,7 @@ const App: React.FC = () => {
             <span className="block mt-2 font-medium text-teal-800">{t.priceTag}</span>
           </p>
 
-          <div className="max-w-md mx-auto">
+          <div className="max-w-md mx-auto relative z-[110]">
             {status === SubmissionStatus.SUCCESS ? (
               <div className="bg-teal-50 border border-teal-100 p-8 rounded-2xl text-left shadow-sm animate-fade-in">
                 <div className="flex items-center gap-3 text-teal-800 font-semibold mb-4">
@@ -509,7 +517,11 @@ const App: React.FC = () => {
                 </div>
                 <p className="text-teal-700 text-sm italic leading-relaxed">"{welcomeMessage}"</p>
                 <button 
-                  onClick={() => setStatus(SubmissionStatus.IDLE)} 
+                  onClick={() => {
+                    setStatus(SubmissionStatus.IDLE);
+                    setName('');
+                    setEmail('');
+                  }} 
                   className="mt-6 text-xs text-teal-600 hover:text-teal-800 underline font-medium"
                 >
                   {t.registerAnother}
@@ -523,7 +535,7 @@ const App: React.FC = () => {
                   value={name} 
                   onChange={e => setName(e.target.value)} 
                   required 
-                  className="px-4 py-4 rounded-xl border border-stone-200 outline-none focus:ring-2 focus:ring-teal-200 focus:border-teal-500 transition-all bg-white/80 backdrop-blur-sm" 
+                  className="px-4 py-4 rounded-xl border border-stone-200 outline-none focus:ring-2 focus:ring-teal-200 focus:border-teal-500 transition-all bg-white text-stone-900 placeholder:text-stone-400 block w-full shadow-sm" 
                 />
                 <input 
                   type="email" 
@@ -531,15 +543,15 @@ const App: React.FC = () => {
                   value={email} 
                   onChange={e => setEmail(e.target.value)} 
                   required 
-                  className="px-4 py-4 rounded-xl border border-stone-200 outline-none focus:ring-2 focus:ring-teal-200 focus:border-teal-500 transition-all bg-white/80 backdrop-blur-sm" 
+                  className="px-4 py-4 rounded-xl border border-stone-200 outline-none focus:ring-2 focus:ring-teal-200 focus:border-teal-500 transition-all bg-white text-stone-900 placeholder:text-stone-400 block w-full shadow-sm" 
                 />
-                <div className="bg-stone-100/60 p-4 rounded-xl text-[11px] text-stone-500 text-left border border-stone-200 leading-normal">
+                <div className="bg-stone-100/80 p-4 rounded-xl text-[11px] text-stone-500 text-left border border-stone-200 leading-normal select-none">
                   <strong>Notice:</strong> {t.notice}
                 </div>
                 <button 
                   type="submit" 
                   disabled={status === SubmissionStatus.LOADING} 
-                  className="py-4 bg-teal-700 hover:bg-teal-800 text-white rounded-xl flex justify-center items-center gap-2 font-bold transition-all shadow-lg shadow-teal-700/20 active:scale-95 disabled:opacity-70 animate-vibrate-jump"
+                  className="py-4 bg-teal-700 hover:bg-teal-800 text-white rounded-xl flex justify-center items-center gap-2 font-bold transition-all shadow-lg shadow-teal-700/20 active:scale-95 disabled:opacity-70 animate-vibrate-jump w-full"
                 >
                   {status === SubmissionStatus.LOADING ? (
                     <Loader2 className="animate-spin w-5 h-5" />
@@ -549,12 +561,13 @@ const App: React.FC = () => {
                 </button>
               </form>
             )}
-            <p className="mt-6 text-[11px] text-stone-400 uppercase tracking-widest font-medium">{t.brandName}</p>
+            <p className="mt-6 text-[11px] text-stone-400 uppercase tracking-widest font-medium select-none">{t.brandName}</p>
           </div>
         </div>
       </main>
 
-      <footer className="py-12 px-8 border-t border-stone-200 flex flex-col md:flex-row justify-between items-center text-stone-500 text-sm bg-white/30 backdrop-blur-sm relative z-10">
+      {/* Footer */}
+      <footer className="py-12 px-8 border-t border-stone-200 flex flex-col md:flex-row justify-between items-center text-stone-500 text-sm bg-white/50 backdrop-blur-sm relative z-[120]">
         <p>© 2025 Pluravita. {t.footerRights}</p>
         <div className="flex gap-8 mt-6 md:mt-0 font-medium">
           <button onClick={() => setActiveModal('LEGAL')} className="hover:text-teal-700 transition-colors">{t.legalNotice}</button>
