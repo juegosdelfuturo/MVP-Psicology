@@ -14,7 +14,7 @@ const translations = {
     title1: "The space to talk.",
     title2: "The support to grow.",
     subtitle: "Connect with empathetic mentors for affordable, personalized well-being support and emotional growth.",
-    priceTag: "Growth sessions for just €20.",
+    priceTag: "Growth sessions for just €20/hour.",
     namePlaceholder: "Your full name",
     emailPlaceholder: "Your email",
     notice: "Notice: Pluravita is a coaching and well-being connection platform. We do not provide clinical therapy or medical services.",
@@ -110,7 +110,7 @@ You can restrict or block cookies through your browser settings (Chrome, Firefox
     title1: "El espacio para hablar.",
     title2: "El apoyo para crecer.",
     subtitle: "Conecta con mentores empáticos para obtener apoyo en bienestar y crecimiento emocional de forma asequible y personalizada.",
-    priceTag: "Sesiones de apoyo por solo 20€.",
+    priceTag: "Sesiones de apoyo por solo 20€/hora.",
     namePlaceholder: "Tu nombre completo",
     emailPlaceholder: "Tu correo electrónico",
     notice: "Aviso: Pluravita es una plataforma de conexión de bienestar. No proporcionamos terapia clínica ni servicios médicos.",
@@ -202,7 +202,7 @@ Puede restringir o bloquear las cookies a través de la configuración de su nav
     title1: "Raum zum Reden.",
     title2: "Unterstützung zum Wachsen.",
     subtitle: "Verbinden Sie sich mit empathischen Mentoren für erschwingliche, personalisierte Wohlfühl-Unterstützung und emotionales Wachstum.",
-    priceTag: "Sitzungen für nur 20€.",
+    priceTag: "Sitzungen für nur 20€/Stunde.",
     namePlaceholder: "Ihr vollständiger Name",
     emailPlaceholder: "Ihre E-Mail-Adresse",
     notice: "Hinweis: Pluravita ist eine Coaching-Plattform. Wir bieten keine klinische Therapie oder medizinische Dienstleistungen an.",
@@ -219,7 +219,7 @@ Puede restringir o bloquear las cookies a través de la configuración de su nav
     restrictedTitle: "Zugriff eingeschränkt",
     restrictedDesc: "Um Ihre Sicherheit und die der Plattform zu gewährleisten, benötigen wir Cookies. Sie können Pluravita ohne Zustimmung nicht betreten.",
     restrictedAction: "Ich habe meine Meinung geändert, Cookies akzeptieren",
-    aiPrompt: (name: string) => `Erzeuge eine sehr kurze, herzliche und unterstützende Dankesnachricht auf Deutsch für eine Person namens "${name}", die sich gerade auf die Warteliste für eine Wohlfühl-Community namens Pluravita gesetzt hat. Betone Wachstum und persönliche Unterstützung. Erwähne KEINE Therapie, klinische Versorgung, medizinische Diagnose oder psychologische Behandlung. Fokus auf Wohlbefinden.`,
+    aiPrompt: (name: string) => `Erzeuge eine sehr kurze, herzliche und unterstützende Dankesnachricht auf Deutsch für eine person namens "${name}", die sich gerade auf die Warteliste für eine Wohlfühl-Community namens Pluravita gesetzt hat. Betone Wachstum und persönliche Unterstützung. Erwähne KEINE Therapie, klinische Versorgung, medizinische Diagnose oder psychologische Behandlung. Fokus auf Wohlbefinden.`,
     footerRights: "Alle Rechte vorbehalten.",
     brandName: "Pluravita Community",
     legalContent: `Willkommen auf der Website der ASOCIACION ESTUDIANTIL JUNIOR NEXIO (im Folgenden NEXIO) mit der Steuernummer G75579508 und Sitz in PS/ URIBITARTE, 6 48001 BILBAO (BIZKAIA). Kontakt per E-Mail unter contact@team-nexio.com, eingetragen im Vereinsregister von Bizkaia unter der Nummer AS/B/26060/2025.
@@ -428,6 +428,27 @@ const App: React.FC = () => {
     );
   }
 
+  const MarqueeItem = () => (
+    <div className="flex items-center">
+      <span className="mx-8 text-sm font-bold tracking-widest uppercase flex items-center gap-4">
+        <span className="w-2 h-2 rounded-full bg-teal-400"></span>
+        {t.comingSoon}
+      </span>
+      <span className="mx-8 text-sm font-bold tracking-widest uppercase flex items-center gap-4">
+        <span className="w-2 h-2 rounded-full bg-teal-400"></span>
+        {t.comingSoon}
+      </span>
+      <span className="mx-8 text-sm font-bold tracking-widest uppercase flex items-center gap-4">
+        <span className="w-2 h-2 rounded-full bg-teal-400"></span>
+        {t.comingSoon}
+      </span>
+      <span className="mx-8 text-sm font-bold tracking-widest uppercase flex items-center gap-4">
+        <span className="w-2 h-2 rounded-full bg-teal-400"></span>
+        {t.comingSoon}
+      </span>
+    </div>
+  );
+
   return (
     <div className="min-h-screen flex flex-col font-sans relative bg-stone-50 overflow-x-hidden">
       {/* Fixed Background Layer */}
@@ -462,12 +483,10 @@ const App: React.FC = () => {
       )}
 
       {/* Marquee Banner */}
-      <div className="bg-teal-900 text-teal-50 py-3 overflow-hidden relative z-[50]">
-        <div className="animate-marquee inline-block whitespace-nowrap">
-          <span className="mx-8 text-sm font-bold tracking-widest uppercase">• {t.comingSoon}</span>
-          <span className="mx-8 text-sm font-bold tracking-widest uppercase">• {t.comingSoon}</span>
-          <span className="mx-8 text-sm font-bold tracking-widest uppercase">• {t.comingSoon}</span>
-          <span className="mx-8 text-sm font-bold tracking-widest uppercase">• {t.comingSoon}</span>
+      <div className="bg-teal-900 text-teal-50 py-3 overflow-hidden relative z-[50] flex">
+        <div className="animate-marquee whitespace-nowrap flex">
+          <MarqueeItem />
+          <MarqueeItem />
         </div>
       </div>
 
@@ -485,7 +504,7 @@ const App: React.FC = () => {
               <path d="M36 60l6 6l12-12" fill="none" stroke="#2dd4bf" strokeWidth="7" strokeLinecap="round" strokeLinejoin="round" />
             </g>
           </svg>
-          <span className="text-xl font-serif font-bold tracking-widest text-teal-900">PLURAVITA</span>
+          <span className="text-xl font-serif font-bold tracking-widest text-teal-900 text-shadow-sm">PLURAVITA</span>
         </div>
         <div className="flex items-center gap-2 text-stone-400 text-xs font-medium uppercase tracking-tighter bg-white/70 px-3 py-1.5 rounded-full border border-stone-100 backdrop-blur-sm shadow-sm">
           <Globe className="w-3 h-3" />
