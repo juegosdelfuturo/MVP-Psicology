@@ -20,6 +20,7 @@ const translations = {
     notice: "Notice: Pluravita is a coaching and well-being connection platform. We do not provide clinical therapy or medical services.",
     button: "Join the Waitlist",
     successTitle: "You're in!",
+    defaultWelcome: "Thank you for joining our community! We are excited to support your growth journey.",
     registerAnother: "Register another person",
     legalNotice: "Legal Notice",
     privacyPolicy: "Privacy Policy",
@@ -31,9 +32,10 @@ const translations = {
     restrictedTitle: "Access Restricted",
     restrictedDesc: "To ensure your safety and the platform's security, we require cookie usage. You cannot access Pluravita without accepting our policy.",
     restrictedAction: "I've changed my mind, accept cookies",
-    aiPrompt: (name: string) => `Generate a very short, warm, and supportive thank you message in English for someone named "${name}" who has just joined a waitlist for a well-being and coaching community called Pluravita. Emphasize growth and personalized support. DO NOT mention therapy, clinical care, medical diagnosis, or psychological treatment. Focus on well-being.`,
+    aiPrompt: (name: string) => `Generate a very short, warm, and supportive thank you message in English for someone named "${name}" who has just joined a waitlist for a well-being and coaching community called Pluravita. Emphasize growth and personalized support. DO NOT mention therapy, clinical care, medical diagnosis, or psychological treatment. Focus on well-being. Max 25 words.`,
     footerRights: "All rights reserved.",
     brandName: "Pluravita Community",
+    errorMsg: "Submission failed. Please check your connection.",
     legalContent: `Welcome to the website of ASOCIACION ESTUDIANTIL JUNIOR NEXIO (hereinafter NEXIO) with Tax Identification Number G75579508 and address at PS/ URIBITARTE, 6 48001 BILBAO (BIZKAIA). Contact by mail at contact@team-nexio.com and registered in the Registry of Associations of Bizkaia with the number AS/B/26060/2025.
 
 Intellectual Property
@@ -116,6 +118,7 @@ You can restrict or block cookies through your browser settings (Chrome, Firefox
     notice: "Aviso: Pluravita es una plataforma de conexión de bienestar. No proporcionamos terapia clínica ni servicios médicos.",
     button: "Unirse a la lista",
     successTitle: "¡Ya estás dentro!",
+    defaultWelcome: "¡Gracias por unirte a nuestra comunidad! Estamos emocionados de apoyarte en tu camino de bienestar.",
     registerAnother: "Registrar a otra persona",
     legalNotice: "Aviso Legal",
     privacyPolicy: "Privacidad",
@@ -127,74 +130,13 @@ You can restrict or block cookies through your browser settings (Chrome, Firefox
     restrictedTitle: "Acceso Restringido",
     restrictedDesc: "Para garantizar tu seguridad y la del servicio, necesitamos usar cookies. No puedes acceder a Pluravita sin aceptar nuestra política.",
     restrictedAction: "He cambiado de opinión, aceptar cookies",
-    aiPrompt: (name: string) => `Genera un mensaje de agradecimiento muy corto, cálido y de apoyo en español para alguien llamado "${name}" que acaba de unirse a una lista de espera para una comunidad de bienestar y coaching llamada Pluravita. Enfatiza el crecimiento y el apoyo personalizado. NO menciones terapia, atención clínica, diagnóstico médico o tratamiento psicológico. Enfócate en el bienestar.`,
+    aiPrompt: (name: string) => `Genera un mensaje de agradecimiento muy corto, cálido y de apoyo en español para alguien llamado "${name}" que acaba de unirse a una lista de espera para una comunidad de bienestar y coaching llamada Pluravita. Enfatiza el crecimiento y el apoyo personalizado. NO menciones terapia, atención clínica, diagnóstico médico o tratamiento psicológico. Enfócate en el bienestar. Máximo 25 palabras.`,
     footerRights: "Todos los derechos reservados.",
     brandName: "Comunidad Pluravita",
-    legalContent: `Bienvenido al sitio web de la ASOCIACIÓN ESTUDIANTIL JUNIOR NEXIO (en adelante NEXIO) con Número de Identificación Fiscal G75579508 y domicilio en PS/ URIBITARTE, 6 48001 BILBAO (BIZKAIA). Contacto por correo en contact@team-nexio.com e inscrita en el Registro de Asociaciones de Bizkaia con el número AS/B/26060/2025.
-
-Propiedad Intelectual
-Los contenidos de este sitio web, textos, imágenes, sonidos, animaciones, etc., así como su diseño gráfico y su código fuente están protegidos por la legislación española sobre los derechos de propiedad intelectual e industrial a favor de las empresas que forman NEXIO. Queda, por tanto, prohibida su reproducción, distribución o comunicación pública, total o parcial, sin la autorización expresa de NEXIO.
-
-Contenido de la web y enlaces
-En NEXIO no nos responsabilizamos del mal uso que se realice de los contenidos de nuestra página web, siendo responsabilidad exclusiva de la persona que accede a ellos o los utiliza. Tampoco asumimos ninguna responsabilidad por la información contenida en las páginas web de terceros a las que se pueda acceder por enlaces o buscadores desde este sitio Web.
-
-Actualización y modificación del sitio web
-NEXIO, se reserva el derecho de modificar o eliminar, sin previo aviso, tanto la información contenida en su sitio web como su configuración y presentación, sin asumir ninguna responsabilidad por ello.
-
-Indicaciones sobre aspectos técnicos
-NEXIO no asume ninguna responsabilidad que se pueda derivar de problemas técnicos o fallos en los equipos informáticos que se produzcan durante la conexión a la red de Internet, así como de los daños que pudieran ser causados por terceras personas mediante intromisiones ilegítimas fuera del control de NEXIO. También quedamos exonerados de cualquier responsabilidad ante posibles daños o perjuicios que pueda sufrir el usuario a consecuencia de errores, defectos u omisiones en la información que facilitemos cuando proceda de fuentes ajenas a nosotros.`,
-    privacyContent: `Identificación del responsable del tratamiento:
-Asociación Estudiantil Junior Empresa NEXIO (en adelante “NEXIO”) con NIF G75579508 y domicilio en Paseo Uribitarte 6, 48001 Bilbao (Bizkaia). Contacto: contact@team-nexio.com
-
-¿Quién es el responsable del tratamiento de sus datos?
-Esta política de privacidad se aplica a todos los datos personales que el interesado facilite a NEXIO. El objetivo es dar transparencia a la información sobre cómo tratamos sus datos personales en cumplimiento de la normativa vigente.
-
-¿Con qué finalidad tratamos sus datos personales y con qué legitimación?
-NEXIO dispone de un Registro de Actividades de Tratamiento:
-
-• MIEMBROS: Gestión de datos personales de miembros. (Legitimación: Art. 6.1 b RGPD - Ejecución de contrato).
-• PERSONAS DE CONTACTO: Gestión de la base de datos de contactos. (Legitimación: Art. 6.1 f RGPD - Interés legítimo).
-• GESTIÓN DE EVENTOS: Registro y gestión de participantes. (Legitimación: Art. 6.1 a RGPD - Consentimiento / Art. 6.1 f RGPD - Interés legítimo para promoción).
-• CONTABILIDAD: Gestión administrativa y contable. (Legitimación: Art. 6.1 b RGPD - Ejecución de contrato).
-
-¿Cuánto tiempo conservamos sus datos?
-Se conservarán durante la relación con la organización y posteriormente según las normativas de archivo y documentación.
-
-Derechos de los afectados:
-Puede ejercer sus derechos de Acceso, Rectificación, Supresión, Limitación, Oposición y Portabilidad enviando un correo a contact@team-nexio.com.
-
-Baja de comunicaciones comerciales:
-Puede revocar su consentimiento en cualquier momento a través del enlace en las comunicaciones o escribiendo a contact@team-nexio.com.
-
-Medidas de seguridad:
-NEXIO ha implementado las medidas técnicas y organizativas necesarias para garantizar la seguridad de sus datos personales.
-
-Última actualización: 27 de marzo de 2025.`,
-    cookiesContent: `La ASOCIACIÓN ESTUDIANTIL JUNIOR Nexio (en adelante, Nexio) desea informarle sobre el uso de cookies en sus sitios web.
-
-Las cookies permiten almacenar y recuperar información sobre los hábitos de navegación de un usuario o de su equipo.
-
-Tipos de Cookies:
-• Técnicas
-• De personalización
-• Analíticas
-• Publicitarias
-• De publicidad comportamental
-
-Cookies exentas de consentimiento:
-Según el Art. 22.2 de la Ley 34/2002 (LSSI), las cookies técnicas (entrada del usuario, autenticación, seguridad, equilibrio de carga, personalización de la interfaz) no requieren consentimiento explícito.
-
-Cookies utilizadas:
-• WordPress (cookillian_opt_*, wordpress_test_cookie, wp-settings-*, comment_author_*, wordpress_*): Estrictamente necesarias para el funcionamiento y preferencias.
-• Analítica web: Mide número de usuarios y frecuencia de visitas.
-
-Aceptación:
-Al continuar, acepta el uso de cookies.
-• Aceptar: El aviso no se mostrará más en la sesión.
-• No aceptar: La web no funcionará correctamente.
-
-Configuración:
-Puede restringir o bloquear las cookies a través de la configuración de su navegador o herramientas como Ghostery.`,
+    errorMsg: "Error en el envío. Por favor, revisa tu conexión.",
+    legalContent: `Bienvenido al sitio web de la ASOCIACIÓN ESTUDIANTIL JUNIOR NEXIO (en adelante NEXIO)...`,
+    privacyContent: `...`,
+    cookiesContent: `...`,
     close: "Cerrar"
   },
   de: {
@@ -208,6 +150,7 @@ Puede restringir o bloquear las cookies a través de la configuración de su nav
     notice: "Hinweis: Pluravita ist eine Coaching-Plattform. Wir bieten keine klinische Therapie oder medizinische Dienstleistungen an.",
     button: "Auf die Warteliste",
     successTitle: "Willkommen!",
+    defaultWelcome: "Vielen Dank für Ihre Anmeldung! Wir freuen uns darauf, Sie auf Ihrem Weg zu begleiten.",
     registerAnother: "Weitere Person anmelden",
     legalNotice: "Impressum",
     privacyPolicy: "Datenschutz",
@@ -219,75 +162,14 @@ Puede restringir o bloquear las cookies a través de la configuración de su nav
     restrictedTitle: "Zugriff eingeschränkt",
     restrictedDesc: "Um Ihre Sicherheit und die der Plattform zu gewährleisten, benötigen wir Cookies. Sie können Pluravita ohne Zustimmung nicht betreten.",
     restrictedAction: "Ich habe meine Meinung geändert, Cookies akzeptieren",
-    aiPrompt: (name: string) => `Erzeuge eine sehr kurze, herzliche und unterstützende Dankesnachricht auf Deutsch für eine person namens "${name}", die sich gerade auf die Warteliste für eine Wohlfühl-Community namens Pluravita gesetzt hat. Betone Wachstum und persönliche Unterstützung. Erwähne KEINE Therapie, klinische Versorgung, medizinische Diagnose oder psychologische Behandlung. Fokus auf Wohlbefinden.`,
+    aiPrompt: (name: string) => `Erzeuge eine sehr kurze, herzliche und unterstützende Dankesnachricht auf Deutsch für eine person namens "${name}", die sich gerade auf die Warteliste für eine Wohlfühl-Community namens Pluravita gesetzt hat. Betone Wachstum und persönliche Unterstützung. Fokus auf Wohlbefinden. Max 25 Wörter.`,
     footerRights: "Alle Rechte vorbehalten.",
     brandName: "Pluravita Community",
-    legalContent: `Willkommen auf der Website der ASOCIACION ESTUDIANTIL JUNIOR NEXIO (im Folgenden NEXIO) mit der Steuernummer G75579508 und Sitz in PS/ URIBITARTE, 6 48001 BILBAO (BIZKAIA). Kontakt per E-Mail unter contact@team-nexio.com, eingetragen im Vereinsregister von Bizkaia unter der Nummer AS/B/26060/2025.
-
-Geistiges Eigentum
-Die Inhalte dieser Website, Texte, Bilder, Töne, Animationen usw. sowie das grafische Design und der Quellcode sind durch die spanische Gesetzgebung über geistige und gewerbliche Eigentumsrechte zugunsten der Unternehmen, aus denen NEXIO besteht, geschützt. Eine Vervielfältigung, Verbreitung oder öffentliche Wiedergabe, ganz oder teilweise, ohne ausdrückliche Genehmigung von NEXIO ist daher untersagt.
-
-Webinhalte und Links
-Wir bei NEXIO sind nicht verantwortlich für den Missbrauch der Inhalte unserer Website; dieser liegt in der ausschließlichen Verantwortung der Person, die darauf zugreift oder sie nutzt. Wir übernehmen auch keine Verantwortung für Informationen auf Webseiten Dritter, auf die über Links oder Suchmaschinen von dieser Website aus zugegriffen werden kann.
-
-Aktualisierung und Änderung der Website
-NEXIO behält sich das Recht vor, die auf der Website enthaltenen Informationen sowie deren Konfiguration und Präsentation ohne vorherige Ankündigung zu ändern oder zu entfernen, ohne dafür eine Verantwortung zu übernehmen.
-
-Hinweise zu technischen Aspekten
-NEXIO übernimmt keine Verantwortung für technische Probleme oder Ausfälle an Computergeräten, die während der Verbindung mit dem Internet auftreten, sowie für Schäden, die durch Dritte durch unrechtmäßige Eingriffe außerhalb der Kontrolle von NEXIO verursacht werden könnten. Wir sind auch von jeglicher Verantwortung für mögliche Schäden befreit, die dem Benutzer durch Fehler, Defekte oder Auslassungen in den von uns bereitgestellten Informationen entstehen könnten, wenn diese aus Quellen außerhalb unseres Unternehmens stammen.`,
-    privacyContent: `Identifizierung des Verantwortlichen:
-Asociación Estudiantil Junior Empresa NEXIO (nachfolgend „NEXIO“) mit NIF G75579508 und Sitz in Paseo Uribitarte 6, 48001 Bilbao (Bizkaia). Kontakt: contact@team-nexio.com
-
-Wer ist für die Verarbeitung Ihrer Daten verantwortlich?
-Diese Datenschutzrichtlinie gilt für alle personenbezogenen Daten, die NEXIO zur Verfügung gestellt werden. Ziel ist die Transparenz über die Verarbeitung Ihrer Daten gemäß den geltenden Vorschriften.
-
-Zu welchem Zweck und mit welcher Legitimation verarbeiten wir Ihre Daten?
-NEXIO führt ein Verzeichnis von Verarbeitungstätigkeiten:
-
-• MITGLIEDER: Verwaltung von Mitgliederdaten. (Rechtmäßigkeit: Art. 6.1 b DSGVO - Vertragserfüllung).
-• KONTAKTPERSONEN: Verwaltung der Kontaktdatenbank. (Rechtmäßigkeit: Art. 6.1 f DSGVO - Berechtigtes Interesse).
-• EVENT-MANAGEMENT: Registrierung und Verwaltung von Teilnehmern. (Rechtmäßigkeit: Art. 6.1 a DSGVO - Einwilligung / Art. 6.1 f DSGVO - Berechtigtes Interesse für Promotion).
-• BUCHHALTUNG: Administrative und buchhalterische Verwaltung. (Rechtmäßigkeit: Art. 6.1 b DSGVO - Vertragserfüllung).
-
-Wie lange speichern wir Ihre Daten?
-Daten werden während der Beziehung zur Organisation und danach gemäß den Archivierungsvorschriften gespeichert.
-
-Rechte der Betroffenen:
-Sie können Ihre Rechte auf Auskunft, Berichtigung, Löschung, Einschränkung, Widerspruch und Übertragbarkeit unter contact@team-nexio.com ausüben.
-
-Abmeldung von Werbe-Kommunikation:
-Widerrufen Sie Ihre Einwilligung jederzeit über den Link in den Nachrichten oder per E-Mail an contact@team-nexio.com.
-
-Sicherheitsmaßnahmen:
-NEXIO hat technische und organisatorische Sicherheitsmaßnahmen implementiert, um den Schutz Ihrer Daten zu gewährleisten.
-
-Letzte Aktualisierung: 27. März 2025.`,
-    cookiesContent: `Die JUNIOR ENTERPRISE STUDENT ASSOCIATION Nexio (nachfolgend Nexio) informiert Sie über die Verwendung von Cookies auf ihren Websites.
-
-Cookies ermöglichen das Speichern und Abrufen von Informationen über Surfgewohnheiten eines Nutzers oder Geräts.
-
-Arten von Cookies:
-• Technische Cookies
-• Personalisierungs-Cookies
-• Analyse-Cookies
-• Werbe-Cookies
-• Verhaltensbasierte Werbe-Cookies
-
-Einwilligungsfreie Cookies:
-Gemäß Art. 22.2 LSSI sind technische Cookies (Nutzereingaben, Authentifizierung, Sicherheit, Lastausgleich, UI-Anpassung) von der ausdrücklichen Einwilligung befreit.
-
-Verwendete Cookies:
-• WordPress (cookillian_opt_*, wordpress_test_cookie, wp-settings-*, comment_author_*, wordpress_*): Notwendig für Funktionen und Einstellungen.
-• Web-Analyse: Misst Nutzerzahlen und Besuchshäufigkeit.
-
-Akzeptanz:
-Durch Fortfahren akzeptieren Sie die Cookie-Verwendung.
-• Akzeptieren: Hinweis wird ausgeblendet.
-• Nicht akzeptieren: Die Website funktioniert möglicherweise nicht korrekt.
-
-Einstellungen ändern:
-Sie können Cookies über Ihre Browsereinstellungen (Chrome, Firefox, Safari) oder Tools wie Ghostery blockieren.`,
-    close: "Close"
+    errorMsg: "Übermittlung fehlgeschlagen. Bitte prüfen Sie Ihre Verbindung.",
+    legalContent: `...`,
+    privacyContent: `...`,
+    cookiesContent: `...`,
+    close: "Schließen"
   }
 };
 
@@ -309,23 +191,17 @@ const App: React.FC = () => {
         if (response.ok) {
           const data = await response.json();
           const country = data.country_code?.toLowerCase();
-          
           const spanishCountries = ['es', 'mx', 'ar', 'co', 'cl', 'pe', 've', 'ec'];
           const germanCountries = ['de', 'at', 'ch'];
-
           if (spanishCountries.includes(country)) setLang('es');
           else if (germanCountries.includes(country)) setLang('de');
         }
       } catch (err) {
         const browserLang = navigator.language.split('-')[0];
-        if (['en', 'es', 'de'].includes(browserLang)) {
-          setLang(browserLang as Language);
-        } else {
-          setLang('en');
-        }
+        if (['en', 'es', 'de'].includes(browserLang)) setLang(browserLang as Language);
+        else setLang('en');
       }
     };
-    
     detectLang();
 
     const savedConsent = localStorage.getItem('pluravita_cookie_consent');
@@ -349,24 +225,36 @@ const App: React.FC = () => {
     setStatus(SubmissionStatus.LOADING);
 
     try {
-      await fetch("https://formspree.io/f/xldqwnej", {
+      // Step 1: Submit to Formspree
+      const formResponse = await fetch("https://formspree.io/f/xldqwnej", {
         method: "POST",
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, language: lang, source: 'Pluravita' })
       });
-      
-      let apiKey = process.env.API_KEY || '';
-      const ai = new GoogleGenAI({ apiKey });
-      const prompt = t.aiPrompt(name);
-      const aiResponse = await ai.models.generateContent({
-        model: 'gemini-3-flash-preview',
-        contents: prompt,
-      });
-      setWelcomeMessage(aiResponse.text || "Thank you.");
+
+      if (!formResponse.ok) throw new Error("Formspree Error");
+
+      // Step 2: Show success UI immediately with default message
+      setWelcomeMessage(t.defaultWelcome);
       setStatus(SubmissionStatus.SUCCESS);
+
+      // Step 3: Attempt AI generation in the background
+      try {
+        const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+        const aiResponse = await ai.models.generateContent({
+          model: 'gemini-3-flash-preview',
+          contents: t.aiPrompt(name),
+        });
+        if (aiResponse.text) {
+          setWelcomeMessage(aiResponse.text);
+        }
+      } catch (aiError) {
+        console.warn("AI Custom message failed, using fallback:", aiError);
+      }
     } catch (error) {
-      console.error(error);
+      console.error("Submission error:", error);
       setStatus(SubmissionStatus.ERROR);
+      setTimeout(() => setStatus(SubmissionStatus.IDLE), 4000);
     }
   }, [email, name, lang, t]);
 
@@ -374,7 +262,6 @@ const App: React.FC = () => {
     if (!activeModal) return null;
     let title = "";
     let content = "";
-
     switch (activeModal) {
       case 'LEGAL': title = t.legalNotice; content = t.legalContent; break;
       case 'PRIVACY': title = t.privacyPolicy; content = t.privacyContent; break;
@@ -413,9 +300,7 @@ const App: React.FC = () => {
         <div className="max-w-md w-full bg-white rounded-2xl shadow-2xl p-8 text-center animate-fade-in border border-stone-200 relative z-10">
           <ShieldAlert className="w-16 h-16 text-rose-500 mx-auto mb-6" />
           <h1 className="text-3xl font-serif font-bold text-stone-900 mb-4">{t.restrictedTitle}</h1>
-          <p className="text-stone-600 mb-8 leading-relaxed">
-            {t.restrictedDesc}
-          </p>
+          <p className="text-stone-600 mb-8 leading-relaxed">{t.restrictedDesc}</p>
           <button 
             onClick={handleAcceptCookies}
             className="w-full py-4 bg-teal-700 hover:bg-teal-800 text-white rounded-xl font-bold flex items-center justify-center gap-2 transition-all shadow-lg active:scale-95 animate-vibrate-jump"
@@ -438,20 +323,11 @@ const App: React.FC = () => {
         <span className="w-2 h-2 rounded-full bg-teal-400"></span>
         {t.comingSoon}
       </span>
-      <span className="mx-8 text-sm font-bold tracking-widest uppercase flex items-center gap-4">
-        <span className="w-2 h-2 rounded-full bg-teal-400"></span>
-        {t.comingSoon}
-      </span>
-      <span className="mx-8 text-sm font-bold tracking-widest uppercase flex items-center gap-4">
-        <span className="w-2 h-2 rounded-full bg-teal-400"></span>
-        {t.comingSoon}
-      </span>
     </div>
   );
 
   return (
     <div className="min-h-screen flex flex-col font-sans relative bg-stone-50 overflow-x-hidden">
-      {/* Fixed Background Layer */}
       <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden select-none">
         <div className="ocean"><div className="wave"></div><div className="wave"></div></div>
       </div>
@@ -465,32 +341,19 @@ const App: React.FC = () => {
             <h2 className="text-2xl font-serif font-bold text-stone-900 mb-2">{t.cookieTitle}</h2>
             <p className="text-stone-600 mb-6 text-sm leading-relaxed">{t.cookieDesc}</p>
             <div className="flex flex-col gap-3">
-              <button 
-                onClick={handleAcceptCookies} 
-                className="w-full py-3 bg-teal-700 text-white rounded-lg shadow-lg font-medium transition-transform hover:scale-[1.02]"
-              >
-                {t.cookieBtnAccept}
-              </button>
-              <button 
-                onClick={handleRejectCookies} 
-                className="w-full py-3 bg-white text-stone-400 border border-stone-200 rounded-lg text-sm hover:text-stone-600 hover:border-stone-400 transition-colors"
-              >
-                {t.cookieBtnReject}
-              </button>
+              <button onClick={handleAcceptCookies} className="w-full py-3 bg-teal-700 text-white rounded-lg shadow-lg font-medium transition-transform hover:scale-[1.02]">{t.cookieBtnAccept}</button>
+              <button onClick={handleRejectCookies} className="w-full py-3 bg-white text-stone-400 border border-stone-200 rounded-lg text-sm hover:text-stone-600 hover:border-stone-400 transition-colors">{t.cookieBtnReject}</button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Marquee Banner */}
       <div className="bg-teal-900 text-teal-50 py-3 overflow-hidden relative z-[50] flex">
         <div className="animate-marquee whitespace-nowrap flex">
-          <MarqueeItem />
-          <MarqueeItem />
+          <MarqueeItem /><MarqueeItem /><MarqueeItem /><MarqueeItem />
         </div>
       </div>
 
-      {/* Navigation */}
       <nav className="w-full py-6 px-4 sm:px-8 max-w-7xl mx-auto flex justify-between items-center relative z-[60]">
         <div className="flex items-center gap-2">
           <svg viewBox="0 0 200 200" className="h-12 w-12" aria-label="Pluravita Logo">
@@ -504,7 +367,7 @@ const App: React.FC = () => {
               <path d="M36 60l6 6l12-12" fill="none" stroke="#2dd4bf" strokeWidth="7" strokeLinecap="round" strokeLinejoin="round" />
             </g>
           </svg>
-          <span className="text-xl font-serif font-bold tracking-widest text-teal-900 text-shadow-sm">PLURAVITA</span>
+          <span className="text-xl font-serif font-bold tracking-widest text-teal-900 text-shadow-sm uppercase">PLURAVITA</span>
         </div>
         <div className="flex items-center gap-2 text-stone-400 text-xs font-medium uppercase tracking-tighter bg-white/70 px-3 py-1.5 rounded-full border border-stone-100 backdrop-blur-sm shadow-sm">
           <Globe className="w-3 h-3" />
@@ -516,7 +379,6 @@ const App: React.FC = () => {
         </div>
       </nav>
 
-      {/* Hero / Form Section */}
       <main className="flex-grow flex flex-col justify-center items-center relative z-[100] min-h-[60vh] pb-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-8 py-12 text-center w-full">
           <h1 className="text-4xl sm:text-6xl font-serif font-bold text-stone-900 mb-6 leading-tight">
@@ -529,18 +391,14 @@ const App: React.FC = () => {
 
           <div className="max-w-md mx-auto relative z-[110]">
             {status === SubmissionStatus.SUCCESS ? (
-              <div className="bg-teal-50 border border-teal-100 p-8 rounded-2xl text-left shadow-sm animate-fade-in">
+              <div className="bg-white border border-teal-100 p-8 rounded-2xl text-left shadow-2xl animate-fade-in ring-4 ring-teal-50/50">
                 <div className="flex items-center gap-3 text-teal-800 font-semibold mb-4">
-                  <Sparkles className="w-5 h-5" />
+                  <div className="bg-teal-50 p-2 rounded-full"><Sparkles className="w-5 h-5" /></div>
                   <span>{t.successTitle}</span>
                 </div>
-                <p className="text-teal-700 text-sm italic leading-relaxed">"{welcomeMessage}"</p>
+                <p className="text-stone-700 text-sm italic leading-relaxed font-medium">"{welcomeMessage}"</p>
                 <button 
-                  onClick={() => {
-                    setStatus(SubmissionStatus.IDLE);
-                    setName('');
-                    setEmail('');
-                  }} 
+                  onClick={() => { setStatus(SubmissionStatus.IDLE); setName(''); setEmail(''); setWelcomeMessage(''); }} 
                   className="mt-6 text-xs text-teal-600 hover:text-teal-800 underline font-medium"
                 >
                   {t.registerAnother}
@@ -549,27 +407,21 @@ const App: React.FC = () => {
             ) : (
               <form onSubmit={handleSubmit} className="flex flex-col gap-3">
                 <input 
-                  type="text" 
-                  placeholder={t.namePlaceholder} 
-                  value={name} 
-                  onChange={e => setName(e.target.value)} 
-                  required 
+                  type="text" placeholder={t.namePlaceholder} value={name} onChange={e => setName(e.target.value)} required 
                   className="px-4 py-4 rounded-xl border border-stone-200 outline-none focus:ring-2 focus:ring-teal-200 focus:border-teal-500 transition-all bg-white text-stone-900 placeholder:text-stone-400 block w-full shadow-sm" 
                 />
                 <input 
-                  type="email" 
-                  placeholder={t.emailPlaceholder} 
-                  value={email} 
-                  onChange={e => setEmail(e.target.value)} 
-                  required 
+                  type="email" placeholder={t.emailPlaceholder} value={email} onChange={e => setEmail(e.target.value)} required 
                   className="px-4 py-4 rounded-xl border border-stone-200 outline-none focus:ring-2 focus:ring-teal-200 focus:border-teal-500 transition-all bg-white text-stone-900 placeholder:text-stone-400 block w-full shadow-sm" 
                 />
+                {status === SubmissionStatus.ERROR && (
+                  <p className="text-rose-600 text-xs font-bold text-left px-2">{t.errorMsg}</p>
+                )}
                 <div className="bg-stone-100/80 p-4 rounded-xl text-[11px] text-stone-500 text-left border border-stone-200 leading-normal select-none">
                   <strong>Notice:</strong> {t.notice}
                 </div>
                 <button 
-                  type="submit" 
-                  disabled={status === SubmissionStatus.LOADING} 
+                  type="submit" disabled={status === SubmissionStatus.LOADING} 
                   className="py-4 bg-teal-700 hover:bg-teal-800 text-white rounded-xl flex justify-center items-center gap-2 font-bold transition-all shadow-lg shadow-teal-700/20 active:scale-95 disabled:opacity-70 animate-vibrate-jump w-full"
                 >
                   {status === SubmissionStatus.LOADING ? (
@@ -585,7 +437,6 @@ const App: React.FC = () => {
         </div>
       </main>
 
-      {/* Footer */}
       <footer className="py-12 px-8 border-t border-stone-200 flex flex-col md:flex-row justify-between items-center text-stone-500 text-sm bg-white/50 backdrop-blur-sm relative z-[120]">
         <p>© 2025 Pluravita. {t.footerRights}</p>
         <div className="flex gap-8 mt-6 md:mt-0 font-medium">
