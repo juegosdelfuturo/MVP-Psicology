@@ -20,7 +20,7 @@
             animation: {
               marquee: 'marquee 40s linear infinite',
               'fade-in': 'fadeIn 0.6s ease-out forwards',
-              'vibrate-jump': 'vibrate-jump 3s ease-in-out infinite',
+              'vibrate-jump': 'vibrate-jump 4s ease-in-out infinite',
             },
             keyframes: {
               marquee: {
@@ -32,9 +32,11 @@
                 '100%': { opacity: '1', transform: 'translateY(0)' },
               },
               'vibrate-jump': {
-                '0%, 70%': { transform: 'translateY(0) rotate(0)' },
-                '72%, 76%, 80%, 84%, 88%, 92%': { transform: 'translateY(-10px) rotate(-2deg)' },
-                '74%, 78%, 82%, 86%, 90%, 94%': { transform: 'translateY(-10px) rotate(2deg)' },
+                '0%, 40%': { transform: 'translateY(0) rotate(0)' },
+                '50%': { transform: 'translateY(-18px) rotate(0)' },
+                '60%': { transform: 'translateY(-18px) rotate(-1.5deg)' },
+                '70%': { transform: 'translateY(-18px) rotate(1.5deg)' },
+                '80%': { transform: 'translateY(-18px) rotate(0)' },
                 '100%': { transform: 'translateY(0) rotate(0)' }
               }
             }
