@@ -2,7 +2,11 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { SubmissionStatus } from './types';
 import { GoogleGenAI } from "@google/genai";
-import { Sparkles, ArrowRight, Loader2, X, Cookie, Globe, ShieldAlert, CheckCircle2 } from 'lucide-react';
+import { 
+  Sparkles, ArrowRight, Loader2, X, Cookie, Globe, 
+  ShieldAlert, CheckCircle2, ChevronDown, Heart, 
+  ShieldCheck, Coins, MessageSquare 
+} from 'lucide-react';
 
 type ModalType = 'LEGAL' | 'PRIVACY' | 'COOKIES' | null;
 type CookieConsentStatus = 'UNDECIDED' | 'ACCEPTED' | 'REJECTED';
@@ -25,86 +29,33 @@ const translations = {
     legalNotice: "Legal Notice",
     privacyPolicy: "Privacy Policy",
     cookiesPolicy: "Cookies Policy",
-    cookieTitle: "We use cookies",
-    cookieDesc: "To provide a safe and supportive coaching experience, we use cookies. Acceptance is required to access Pluravita.",
-    cookieBtnAccept: "Accept & Continue",
-    cookieBtnReject: "Reject All",
+    cookieTitle: "Privacy & Cookies",
+    cookieDesc: "To ensure a safe environment, we use essential cookies. Acceptance is required to access the Pluravita platform.",
+    cookieBtnAccept: "I accept",
+    cookieBtnReject: "Decline",
     restrictedTitle: "Access Restricted",
-    restrictedDesc: "To ensure your safety and the platform's security, we require cookie usage. You cannot access Pluravita without accepting our policy.",
-    restrictedAction: "I've changed my mind, accept cookies",
-    aiPrompt: (name: string) => `Generate a very short, warm, and supportive thank you message in English for someone named "${name}" who has just joined a waitlist for a well-being and coaching community called Pluravita. Emphasize growth and personalized support. DO NOT mention therapy, clinical care, medical diagnosis, or psychological treatment. Focus on well-being. Max 25 words.`,
+    restrictedDesc: "For safety reasons, cookie acceptance is required to explore Pluravita.",
+    restrictedAction: "Accept and proceed",
+    aiPrompt: (name: string) => `Generate a very short, warm, and supportive thank you message in English for someone named "${name}" who has just joined a waitlist for a well-being and coaching community called Pluravita. Focus on well-being and growth. Max 25 words.`,
     footerRights: "All rights reserved.",
     brandName: "Pluravita Community",
     errorMsg: "Submission failed. Please check your connection.",
-    legalContent: `Welcome to the website of ASOCIACION ESTUDIANTIL JUNIOR NEXIO (hereinafter NEXIO) with Tax Identification Number G75579508 and address at PS/ URIBITARTE, 6 48001 BILBAO (BIZKAIA). Contact by mail at contact@team-nexio.com and registered in the Registry of Associations of Bizkaia with the number AS/B/26060/2025.
-
-Intellectual Property
-The contents of this website, texts, images, sounds, animations, etc. as well as its graphic design and its source code are protected by Spanish legislation on intellectual and industrial property rights in favor of the companies that make up NEXIO. It is therefore prohibited its reproduction, distribution or public communication, totally or partially, without the express authorization of NEXIO.
-
-Web content and links
-At NEXIO we are not responsible for the misuse made of the contents of our website, being exclusive responsibility of the person who accesses them or uses them. We neither assume responsibility for the information contained on the third party´s web pages that can be accessed by links or search engines from this Web site.
-
-Update and modification of the website
-NEXIO, reserves the right to modify or remove, without prior notice, both the information contained on your website and its configuration and presentation, without assuming any responsibility for it.
-
-Indications on technical aspects
-NEXIO assumes no responsibility that can be derived from technical problems or failures in computer equipment that occur during connection to the Internet network, as well as damages that could be caused by third parties through illegitimate intrusions outside the control of NEXIO. We are also exempt from any responsibility for possible damages that the user may suffer as a result of errors, defects or omissions in the information we provide when coming from sources outside us.`,
-    privacyContent: `Identification of the data controller:
-Asociación Estudiantil Junior Empresa NEXIO (hereinafter “NEXIO”) with NIF ID G75579508 and domicile in Paseo Uribitarte 6, 48001 Bilbao (Bizkaia). Contact: contact@team-nexio.com
-
-Who is responsible for the processing of your data?
-This privacy policy applies to all personal data that the data subject provides to NEXIO. The purpose of NEXIO’s Privacy Policy is to give transparency to information on how we process your personal data in compliance with the current data protection regulations.
-
-For what purpose do we process your personal data and with what legitimacy?
-NEXIO has a Record of Processing Activities where each of the following processing are detailed:
-
-• MEMBERS: Management of personal data of members. (Legitimacy: Art. 6.1 b GDPR - Performance of a contract).
-• CONTACT PEOPLE: Management of the contacts database. (Legitimacy: Art. 6.1 f GDPR - Legitimate interest).
-• MANAGEMENT OF EVENTS: Registering and management of participants. (Legitimacy: Art. 6.1 a GDPR - Consent / Art. 6.1 f GDPR - Legitimate interest for promotion).
-• ACCOUNTABILITY: Administrative and accounting management. (Legitimacy: Art. 6.1 b GDPR - Performance of a contract).
-
-How long do we store your personal data?
-NEXIO will store the data during the relationship with the organization and thereafter according to archive and documentation regulations.
-
-Who has access to your personal data?
-NEXIO may make transfers to Public Administrations in cases required by law.
-
-What are the rights of those affected?
-You may exercise rights of: Access, Rectification, Deletion, Limitation, Objection, and Portability. Requests can be sent to contact@team-nexio.com.
-
-Unsubscribe from commercial communications
-Revoke consent at any time via the link in communications or by emailing contact@team-nexio.com.
-
-Security measures
-NEXIO has implemented technical and organizational security measures necessary to guarantee the safety of your personal data.
-
-Modification of the Privacy Policy
-NEXIO may modify this policy. Last update: 27, March of 2025.`,
-    cookiesContent: `The JUNIOR ENTERPRISE STUDENT ASSOCIATION Nexio (hereinafter, Nexio) would like to inform you about the use of cookies on its websites.
-
-Cookies allow a website to store and retrieve information about a user’s or device’s browsing habits.
-
-Types of Cookies:
-• Technical cookies
-• Personalization cookies
-• Analytical cookies
-• Advertising cookies
-• Behavioral advertising cookies
-
-Cookies Exempt from Consent:
-Under Article 22.2 of Law 34/2002 (LSSI), certain technical cookies (user input, authentication, security, load balancing, UI customization) are exempt from explicit consent.
-
-Cookies Used:
-• WordPress (cookillian_opt_*, wordpress_test_cookie, wp-settings-*, comment_author_*, wordpress_*): Strictly necessary for functionality and preference storage.
-• Web analytics: Measures user numbers, page views, and frequency.
-
-Acceptance:
-By continuing, you accept the use of cookies.
-• Accept: Notice hidden.
-• Do not accept: Website may not function correctly.
-
-Modify Settings:
-You can restrict or block cookies through your browser settings (Chrome, Firefox, Safari, Edge) or tools like Ghostery.`,
+    visionTitle: "A new paradigm for well-being.",
+    visionText: "We believe mental support shouldn't be a privilege. Pluravita is being built to bridge the gap between self-care and clinical therapy, offering a third space for human connection.",
+    pillar1Title: "Human Connection",
+    pillar1Text: "No algorithms, just real people. Connect with mentors who share your language and life context.",
+    pillar2Title: "Absolute Privacy",
+    pillar2Text: "Your conversations are sacred. We prioritize security and anonymity from the ground up.",
+    pillar3Title: "Radical Access",
+    pillar3Text: "By keeping costs at €20/hour, we make quality emotional support accessible to anyone, anywhere.",
+    faqTitle: "F.A.Q.",
+    faq1Q: "Is this therapy?",
+    faq1A: "No. Our mentors provide emotional support and life coaching. We do not provide medical diagnosis or psychiatric treatment.",
+    faq2Q: "How are mentors selected?",
+    faq2A: "We vet our community for empathy, active listening skills, and verified life experience.",
+    legalContent: "This website is operated by the Pluravita Community. All content is for informational purposes. For inquiries, please contact our support team. The provider reserves the right to modify services and terms at any time without prior notice.",
+    privacyContent: "We value your privacy. Your data is collected solely for waitlist management and service updates. We do not sell your personal information to third parties. You may request data deletion at any time.",
+    cookiesContent: "We use strictly necessary cookies to manage session security and user preferences. Analytical cookies may be used to improve site performance. You can manage your preferences through your browser settings.",
     close: "Close"
   },
   es: {
@@ -113,64 +64,108 @@ You can restrict or block cookies through your browser settings (Chrome, Firefox
     title2: "El apoyo para crecer.",
     subtitle: "Conecta con mentores empáticos para obtener apoyo en bienestar y crecimiento emocional de forma asequible y personalizada.",
     priceTag: "Sesiones de apoyo por solo 20€/hora.",
-    namePlaceholder: "Tu nombre completo",
-    emailPlaceholder: "Tu correo electrónico",
-    notice: "Aviso: Pluravita es una plataforma de conexión de bienestar. No proporcionamos terapia clínica ni servicios médicos.",
+    namePlaceholder: "Nombre completo",
+    emailPlaceholder: "Correo electrónico",
+    notice: "Aviso: Pluravita es una plataforma de bienestar. No proporcionamos terapia clínica ni servicios médicos.",
     button: "Unirse a la lista",
     successTitle: "¡Ya estás dentro!",
-    defaultWelcome: "¡Gracias por unirte a nuestra comunidad! Estamos emocionados de apoyarte en tu camino de bienestar.",
+    defaultWelcome: "¡Gracias por unirte! Estamos emocionados de acompañarte en tu crecimiento.",
     registerAnother: "Registrar a otra persona",
     legalNotice: "Aviso Legal",
     privacyPolicy: "Privacidad",
     cookiesPolicy: "Cookies",
-    cookieTitle: "Usamos cookies",
-    cookieDesc: "Para ofrecerte una experiencia segura, utilizamos cookies. Es necesario aceptarlas para acceder a Pluravita.",
-    cookieBtnAccept: "Aceptar y continuar",
-    cookieBtnReject: "Rechazar todo",
+    cookieTitle: "Privacidad y Cookies",
+    cookieDesc: "Para garantizar un entorno seguro, utilizamos cookies esenciales. Se requiere su aceptación para acceder.",
+    cookieBtnAccept: "Acepto",
+    cookieBtnReject: "Rechazar",
     restrictedTitle: "Acceso Restringido",
-    restrictedDesc: "Para garantizar tu seguridad y la del servicio, necesitamos usar cookies. No puedes acceder a Pluravita sin aceptar nuestra política.",
-    restrictedAction: "He cambiado de opinión, aceptar cookies",
-    aiPrompt: (name: string) => `Genera un mensaje de agradecimiento muy corto, cálido y de apoyo en español para alguien llamado "${name}" que acaba de unirse a una lista de espera para una comunidad de bienestar y coaching llamada Pluravita. Enfatiza el crecimiento y el apoyo personalizado. NO menciones terapia, atención clínica, diagnóstico médico o tratamiento psicológico. Enfócate en el bienestar. Máximo 25 palabras.`,
+    restrictedDesc: "Por motivos de seguridad, es necesario aceptar las cookies para explorar Pluravita.",
+    restrictedAction: "Aceptar y continuar",
+    aiPrompt: (name: string) => `Genera un mensaje de agradecimiento corto y cálido en español para ${name} por unirse a Pluravita. Máximo 25 palabras.`,
     footerRights: "Todos los derechos reservados.",
     brandName: "Comunidad Pluravita",
-    errorMsg: "Error en el envío. Por favor, revisa tu conexión.",
-    legalContent: `Bienvenido al sitio web de la ASOCIACIÓN ESTUDIANTIL JUNIOR NEXIO (en adelante NEXIO)...`,
-    privacyContent: `...`,
-    cookiesContent: `...`,
+    errorMsg: "Error en el envío.",
+    visionTitle: "Un nuevo paradigma de bienestar.",
+    visionText: "Creemos que el apoyo mental no debe ser un privilegio. Pluravita nace para cerrar la brecha entre el autocuidado y la terapia clínica.",
+    pillar1Title: "Conexión Humana",
+    pillar1Text: "Sin algoritmos, solo personas reales. Conecta con mentores que comparten tu idioma y contexto de vida.",
+    pillar2Title: "Privacidad Absoluta",
+    pillar2Text: "Tus conversaciones son sagradas. Priorizamos la seguridad y el anonimato desde el primer día.",
+    pillar3Title: "Acceso Radical",
+    pillar3Text: "Al mantener el coste en 20€/hora, hacemos que el apoyo emocional de calidad sea accesible para todos.",
+    faqTitle: "P.F.",
+    faq1Q: "¿Es esto terapia?",
+    faq1A: "No. Nuestros mentores ofrecen apoyo emocional y coaching. No realizamos diagnósticos médicos ni tratamientos psiquiátricos.",
+    faq2Q: "¿Cómo se eligen los mentores?",
+    faq2A: "Evaluamos la empatía, la capacidad de escucha activa y la experiencia de vida verificada.",
+    legalContent: "Este sitio es operado por la Comunidad Pluravita. Todo el contenido tiene fines informativos. El proveedor se reserva el derecho de modificar los términos en cualquier momento.",
+    privacyContent: "Valoramos tu privacidad. Tus datos se utilizan solo para la lista de espera y actualizaciones del servicio. Puedes solicitar su eliminación cuando desees.",
+    cookiesContent: "Utilizamos cookies necesarias para la seguridad y preferencias del usuario. Puedes gestionarlas en la configuración de tu navegador.",
     close: "Cerrar"
   },
   de: {
-    comingSoon: "Demnächst verfügbar",
+    comingSoon: "Demnächst",
     title1: "Raum zum Reden.",
     title2: "Unterstützung zum Wachsen.",
-    subtitle: "Verbinden Sie sich mit empathischen Mentoren für erschwingliche, personalisierte Wohlfühl-Unterstützung und emotionales Wachstum.",
+    subtitle: "Verbinden Sie sich mit empathischen Mentoren für erschwingliche, personalisierte Wohlfühl-Unterstützung.",
     priceTag: "Sitzungen für nur 20€/Stunde.",
-    namePlaceholder: "Ihr vollständiger Name",
-    emailPlaceholder: "Ihre E-Mail-Adresse",
-    notice: "Hinweis: Pluravita ist eine Coaching-Plattform. Wir bieten keine klinische Therapie oder medizinische Dienstleistungen an.",
+    namePlaceholder: "Vollständiger Name",
+    emailPlaceholder: "E-Mail-Adresse",
+    notice: "Hinweis: Keine klinische Therapie oder medizinische Dienste.",
     button: "Auf die Warteliste",
     successTitle: "Willkommen!",
-    defaultWelcome: "Vielen Dank für Ihre Anmeldung! Wir freuen uns darauf, Sie auf Ihrem Weg zu begleiten.",
-    registerAnother: "Weitere Person anmelden",
+    defaultWelcome: "Vielen Dank für Ihre Anmeldung!",
+    registerAnother: "Noch jemanden anmelden",
     legalNotice: "Impressum",
     privacyPolicy: "Datenschutz",
     cookiesPolicy: "Cookies",
-    cookieTitle: "Wir verwenden Cookies",
-    cookieDesc: "Um ein sicheres Coaching-Erlebnis zu bieten, verwenden wir Cookies. Die Zustimmung ist für den Zugriff auf Pluravita erforderlich.",
-    cookieBtnAccept: "Akzeptieren & Weiter",
+    cookieTitle: "Privatsphäre & Cookies",
+    cookieDesc: "Um eine sichere Umgebung zu gewährleisten, verwenden wir Cookies. Akzeptanz ist für den Zugriff erforderlich.",
+    cookieBtnAccept: "Akzeptieren",
     cookieBtnReject: "Ablehnen",
     restrictedTitle: "Zugriff eingeschränkt",
-    restrictedDesc: "Um Ihre Sicherheit und die der Plattform zu gewährleisten, benötigen wir Cookies. Sie können Pluravita ohne Zustimmung nicht betreten.",
-    restrictedAction: "Ich habe meine Meinung geändert, Cookies akzeptieren",
-    aiPrompt: (name: string) => `Erzeuge eine sehr kurze, herzliche und unterstützende Dankesnachricht auf Deutsch für eine person namens "${name}", die sich gerade auf die Warteliste für eine Wohlfühl-Community namens Pluravita gesetzt hat. Betone Wachstum und persönliche Unterstützung. Fokus auf Wohlbefinden. Max 25 Wörter.`,
+    restrictedDesc: "Aus Sicherheitsgründen ist die Cookie-Akzeptanz erforderlich.",
+    restrictedAction: "Akzeptieren und fortfahren",
+    aiPrompt: (name: string) => `Erzeuge eine kurze, herzliche Dankesnachricht auf Deutsch für ${name} von Pluravita. Max 25 Wörter.`,
     footerRights: "Alle Rechte vorbehalten.",
     brandName: "Pluravita Community",
-    errorMsg: "Übermittlung fehlgeschlagen. Bitte prüfen Sie Ihre Verbindung.",
-    legalContent: `...`,
-    privacyContent: `...`,
-    cookiesContent: `...`,
+    errorMsg: "Fehler beim Senden.",
+    visionTitle: "Ein neues Paradigma für Wohlbefinden.",
+    visionText: "Wir glauben, dass mentale Unterstützung kein Privileg sein sollte. Pluravita schließt die Lücke zwischen Selbstfürsorge und klinischer Therapie.",
+    pillar1Title: "Menschliche Verbindung",
+    pillar1Text: "Keine Algorithmen, nur echte Menschen. Finden Sie Mentoren in Ihrer Sprache.",
+    pillar2Title: "Absolute Privatsphäre",
+    pillar2Text: "Ihre Gespräche sind heilig. Wir priorisieren Sicherheit von Anfang an.",
+    pillar3Title: "Radikaler Zugang",
+    pillar3Text: "Mit 20€ pro Stunde machen wir hochwertige emotionale Unterstützung für jeden zugänglich.",
+    faqTitle: "F.A.Q.",
+    faq1Q: "Ist das Therapie?",
+    faq1A: "Nein. Unsere Mentoren bieten Coaching und emotionale Unterstützung, keine medizinische Behandlung.",
+    faq2Q: "Wie werden Mentoren ausgewählt?",
+    faq2A: "Wir prüfen Empathie, Zuhörfähigkeit und verifizierte Lebenserfahrung.",
+    legalContent: "Impressum der Pluravita Community. Alle Inhalte dienen der Information. Der Anbieter behält sich Änderungen vor.",
+    privacyContent: "Ihre Daten werden nur für die Warteliste verwendet. Wir geben keine Informationen an Dritte weiter.",
+    cookiesContent: "Wir verwenden Cookies für Sicherheit und Präferenzen. Sie können diese im Browser verwalten.",
     close: "Schließen"
   }
+};
+
+const FAQItem: React.FC<{ q: string; a: string }> = ({ q, a }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  return (
+    <div className="border-b border-stone-200 py-4">
+      <button 
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full flex justify-between items-center text-left group"
+      >
+        <span className="text-lg font-serif font-semibold text-stone-800 group-hover:text-teal-700 transition-colors">{q}</span>
+        <ChevronDown className={`w-5 h-5 text-stone-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+      </button>
+      <div className={`overflow-hidden transition-all duration-300 ${isOpen ? 'max-h-48 mt-4 opacity-100' : 'max-h-0 opacity-0'}`}>
+        <p className="text-stone-600 leading-relaxed pb-2">{a}</p>
+      </div>
+    </div>
+  );
 };
 
 const App: React.FC = () => {
@@ -225,7 +220,6 @@ const App: React.FC = () => {
     setStatus(SubmissionStatus.LOADING);
 
     try {
-      // Step 1: Submit to Formspree
       const formResponse = await fetch("https://formspree.io/f/xldqwnej", {
         method: "POST",
         headers: { 'Content-Type': 'application/json' },
@@ -234,11 +228,9 @@ const App: React.FC = () => {
 
       if (!formResponse.ok) throw new Error("Formspree Error");
 
-      // Step 2: Show success UI immediately with default message
       setWelcomeMessage(t.defaultWelcome);
       setStatus(SubmissionStatus.SUCCESS);
 
-      // Step 3: Attempt AI generation in the background
       try {
         const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
         const aiResponse = await ai.models.generateContent({
@@ -249,7 +241,7 @@ const App: React.FC = () => {
           setWelcomeMessage(aiResponse.text);
         }
       } catch (aiError) {
-        console.warn("AI Custom message failed, using fallback:", aiError);
+        console.warn("AI generation failed", aiError);
       }
     } catch (error) {
       console.error("Submission error:", error);
@@ -277,7 +269,7 @@ const App: React.FC = () => {
               <X className="w-6 h-6 text-stone-400" />
             </button>
           </div>
-          <div className="text-stone-600 leading-relaxed mb-8 whitespace-pre-wrap text-sm sm:text-base">
+          <div className="text-stone-600 leading-relaxed mb-8 whitespace-pre-wrap">
             {content}
           </div>
           <button 
@@ -293,42 +285,21 @@ const App: React.FC = () => {
 
   if (cookieStatus === 'REJECTED') {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-stone-50 font-sans relative overflow-hidden">
-        <div className="absolute inset-0 z-0 pointer-events-none opacity-50">
-          <div className="ocean"><div className="wave"></div><div className="wave"></div></div>
-        </div>
-        <div className="max-w-md w-full bg-white rounded-2xl shadow-2xl p-8 text-center animate-fade-in border border-stone-200 relative z-10">
+      <div className="min-h-screen flex items-center justify-center bg-stone-50 p-6">
+        <div className="max-w-md bg-white rounded-2xl shadow-2xl p-8 text-center border border-stone-200">
           <ShieldAlert className="w-16 h-16 text-rose-500 mx-auto mb-6" />
-          <h1 className="text-3xl font-serif font-bold text-stone-900 mb-4">{t.restrictedTitle}</h1>
-          <p className="text-stone-600 mb-8 leading-relaxed">{t.restrictedDesc}</p>
-          <button 
-            onClick={handleAcceptCookies}
-            className="w-full py-4 bg-teal-700 hover:bg-teal-800 text-white rounded-xl font-bold flex items-center justify-center gap-2 transition-all shadow-lg active:scale-95 animate-vibrate-jump"
-          >
-            <CheckCircle2 className="w-5 h-5" />
-            {t.restrictedAction}
-          </button>
+          <h1 className="text-2xl font-serif font-bold text-stone-900 mb-4">{t.restrictedTitle}</h1>
+          <p className="text-stone-600 mb-8">{t.restrictedDesc}</p>
+          <button onClick={handleAcceptCookies} className="w-full py-4 bg-teal-700 text-white rounded-xl font-bold transition-all hover:bg-teal-800">{t.restrictedAction}</button>
         </div>
       </div>
     );
   }
 
-  const MarqueeItem = () => (
-    <div className="flex items-center">
-      <span className="mx-8 text-sm font-bold tracking-widest uppercase flex items-center gap-4">
-        <span className="w-2 h-2 rounded-full bg-teal-400"></span>
-        {t.comingSoon}
-      </span>
-      <span className="mx-8 text-sm font-bold tracking-widest uppercase flex items-center gap-4">
-        <span className="w-2 h-2 rounded-full bg-teal-400"></span>
-        {t.comingSoon}
-      </span>
-    </div>
-  );
-
   return (
     <div className="min-h-screen flex flex-col font-sans relative bg-stone-50 overflow-x-hidden">
-      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden select-none">
+      {/* Visual background layers */}
+      <div className="fixed inset-0 z-0 pointer-events-none opacity-50">
         <div className="ocean"><div className="wave"></div><div className="wave"></div></div>
       </div>
 
@@ -336,113 +307,177 @@ const App: React.FC = () => {
 
       {cookieStatus === 'UNDECIDED' && (
         <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-stone-900/95 backdrop-blur-md">
-          <div className="bg-white rounded-xl shadow-2xl max-w-md w-full p-8 text-center animate-fade-in border border-stone-200">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 text-center border border-stone-200 animate-fade-in">
             <Cookie className="w-12 h-12 text-teal-600 mx-auto mb-4" />
             <h2 className="text-2xl font-serif font-bold text-stone-900 mb-2">{t.cookieTitle}</h2>
-            <p className="text-stone-600 mb-6 text-sm leading-relaxed">{t.cookieDesc}</p>
+            <p className="text-stone-600 mb-6 leading-relaxed">{t.cookieDesc}</p>
             <div className="flex flex-col gap-3">
-              <button onClick={handleAcceptCookies} className="w-full py-3 bg-teal-700 text-white rounded-lg shadow-lg font-medium transition-transform hover:scale-[1.02]">{t.cookieBtnAccept}</button>
-              <button onClick={handleRejectCookies} className="w-full py-3 bg-white text-stone-400 border border-stone-200 rounded-lg text-sm hover:text-stone-600 hover:border-stone-400 transition-colors">{t.cookieBtnReject}</button>
+              <button onClick={handleAcceptCookies} className="w-full py-3 bg-teal-700 text-white rounded-xl font-bold transition-transform active:scale-95">{t.cookieBtnAccept}</button>
+              <button onClick={handleRejectCookies} className="w-full py-3 text-stone-400 text-sm hover:text-stone-600 transition-colors">{t.cookieBtnReject}</button>
             </div>
           </div>
         </div>
       )}
 
-      <div className="bg-teal-900 text-teal-50 py-3 overflow-hidden relative z-[50] flex">
-        <div className="animate-marquee whitespace-nowrap flex">
-          <MarqueeItem /><MarqueeItem /><MarqueeItem /><MarqueeItem />
-        </div>
-      </div>
-
-      <nav className="w-full py-6 px-4 sm:px-8 max-w-7xl mx-auto flex justify-between items-center relative z-[60]">
+      {/* Editorial Navigation */}
+      <nav className="w-full py-8 px-6 sm:px-12 max-w-7xl mx-auto flex justify-between items-center relative z-[60]">
         <div className="flex items-center gap-2">
-          <svg viewBox="0 0 200 200" className="h-12 w-12" aria-label="Pluravita Logo">
-            <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" style={{stopColor:'#0f766e', stopOpacity:1}} />
-              <stop offset="100%" style={{stopColor:'#2dd4bf', stopOpacity:1}} />
-            </linearGradient>
-            <circle cx="100" cy="100" r="80" fill="none" stroke="url(#g1)" strokeWidth="4" opacity="0.2" />
-            <g transform="translate(60, 55) scale(0.8)">
-              <circle cx="45" cy="60" r="24" fill="none" stroke="#0f766e" strokeWidth="6" />
-              <path d="M36 60l6 6l12-12" fill="none" stroke="#2dd4bf" strokeWidth="7" strokeLinecap="round" strokeLinejoin="round" />
-            </g>
-          </svg>
-          <span className="text-xl font-serif font-bold tracking-widest text-teal-900 text-shadow-sm uppercase">PLURAVITA</span>
+          <div className="w-8 h-8 bg-teal-800 rounded-full flex items-center justify-center text-white font-serif font-bold text-lg">P</div>
+          <span className="text-xl font-serif font-bold tracking-widest text-teal-900 uppercase">PLURAVITA</span>
         </div>
-        <div className="flex items-center gap-2 text-stone-400 text-xs font-medium uppercase tracking-tighter bg-white/70 px-3 py-1.5 rounded-full border border-stone-100 backdrop-blur-sm shadow-sm">
-          <Globe className="w-3 h-3" />
-          <button onClick={() => setLang('en')} className={`${lang === 'en' ? 'text-teal-700 font-bold' : ''} hover:text-stone-600 transition-colors`}>EN</button>
-          <span>/</span>
-          <button onClick={() => setLang('es')} className={`${lang === 'es' ? 'text-teal-700 font-bold' : ''} hover:text-stone-600 transition-colors`}>ES</button>
-          <span>/</span>
-          <button onClick={() => setLang('de')} className={`${lang === 'de' ? 'text-teal-700 font-bold' : ''} hover:text-stone-600 transition-colors`}>DE</button>
+        <div className="flex items-center gap-4 text-xs font-bold uppercase tracking-widest text-stone-400">
+          <button onClick={() => setLang('en')} className={`${lang === 'en' ? 'text-teal-700 border-b-2 border-teal-700' : ''} transition-all pb-1`}>EN</button>
+          <button onClick={() => setLang('es')} className={`${lang === 'es' ? 'text-teal-700 border-b-2 border-teal-700' : ''} transition-all pb-1`}>ES</button>
+          <button onClick={() => setLang('de')} className={`${lang === 'de' ? 'text-teal-700 border-b-2 border-teal-700' : ''} transition-all pb-1`}>DE</button>
         </div>
       </nav>
 
-      <main className="flex-grow flex flex-col justify-center items-center relative z-[100] min-h-[60vh] pb-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-8 py-12 text-center w-full">
-          <h1 className="text-4xl sm:text-6xl font-serif font-bold text-stone-900 mb-6 leading-tight">
-            {t.title1} <br/><span className="text-teal-700">{t.title2}</span>
-          </h1>
-          <p className="text-lg text-stone-600 mb-10 max-w-2xl mx-auto leading-relaxed">
-            {t.subtitle}
-            <span className="block mt-2 font-medium text-teal-800">{t.priceTag}</span>
-          </p>
-
-          <div className="max-w-md mx-auto relative z-[110]">
-            {status === SubmissionStatus.SUCCESS ? (
-              <div className="bg-white border border-teal-100 p-8 rounded-2xl text-left shadow-2xl animate-fade-in ring-4 ring-teal-50/50">
-                <div className="flex items-center gap-3 text-teal-800 font-semibold mb-4">
-                  <div className="bg-teal-50 p-2 rounded-full"><Sparkles className="w-5 h-5" /></div>
-                  <span>{t.successTitle}</span>
-                </div>
-                <p className="text-stone-700 text-sm italic leading-relaxed font-medium">"{welcomeMessage}"</p>
-                <button 
-                  onClick={() => { setStatus(SubmissionStatus.IDLE); setName(''); setEmail(''); setWelcomeMessage(''); }} 
-                  className="mt-6 text-xs text-teal-600 hover:text-teal-800 underline font-medium"
-                >
-                  {t.registerAnother}
-                </button>
+      {/* Main Content Area */}
+      <main className="relative z-[100]">
+        
+        {/* HERO SECTION - Editorial Style */}
+        <section className="min-h-[70vh] flex flex-col justify-center px-6 sm:px-12 max-w-7xl mx-auto pt-12 pb-24">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <div>
+              <div className="inline-flex items-center gap-2 px-3 py-1 bg-teal-100 text-teal-800 rounded-full text-[10px] font-bold tracking-[0.2em] uppercase mb-8">
+                <Sparkles className="w-3 h-3" />
+                {t.comingSoon}
               </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-                <input 
-                  type="text" placeholder={t.namePlaceholder} value={name} onChange={e => setName(e.target.value)} required 
-                  className="px-4 py-4 rounded-xl border border-stone-200 outline-none focus:ring-2 focus:ring-teal-200 focus:border-teal-500 transition-all bg-white text-stone-900 placeholder:text-stone-400 block w-full shadow-sm" 
-                />
-                <input 
-                  type="email" placeholder={t.emailPlaceholder} value={email} onChange={e => setEmail(e.target.value)} required 
-                  className="px-4 py-4 rounded-xl border border-stone-200 outline-none focus:ring-2 focus:ring-teal-200 focus:border-teal-500 transition-all bg-white text-stone-900 placeholder:text-stone-400 block w-full shadow-sm" 
-                />
-                {status === SubmissionStatus.ERROR && (
-                  <p className="text-rose-600 text-xs font-bold text-left px-2">{t.errorMsg}</p>
+              <h1 className="text-6xl sm:text-8xl font-serif font-bold text-stone-900 mb-8 leading-[0.9] tracking-tight">
+                {t.title1} <br/>
+                <span className="text-teal-700 italic">{t.title2}</span>
+              </h1>
+              <p className="text-xl text-stone-600 mb-12 max-w-lg leading-relaxed font-light">
+                {t.subtitle}
+              </p>
+              
+              <div className="max-w-md">
+                {status === SubmissionStatus.SUCCESS ? (
+                  <div className="bg-white border border-teal-100 p-8 rounded-3xl shadow-xl animate-fade-in">
+                    <div className="flex items-center gap-3 text-teal-800 font-bold mb-4">
+                      <CheckCircle2 className="w-6 h-6" />
+                      <span>{t.successTitle}</span>
+                    </div>
+                    <p className="text-stone-700 italic leading-relaxed">"{welcomeMessage}"</p>
+                    <button 
+                      onClick={() => { setStatus(SubmissionStatus.IDLE); setName(''); setEmail(''); }} 
+                      className="mt-6 text-xs text-teal-600 hover:text-teal-800 underline font-medium"
+                    >
+                      {t.registerAnother}
+                    </button>
+                  </div>
+                ) : (
+                  <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                    <div className="flex flex-col sm:flex-row gap-3">
+                      <input 
+                        type="text" placeholder={t.namePlaceholder} value={name} onChange={e => setName(e.target.value)} required 
+                        className="flex-1 px-6 py-4 rounded-2xl border-none shadow-sm focus:ring-2 focus:ring-teal-200 outline-none transition-all font-medium placeholder:text-stone-300" 
+                      />
+                      <input 
+                        type="email" placeholder={t.emailPlaceholder} value={email} onChange={e => setEmail(e.target.value)} required 
+                        className="flex-1 px-6 py-4 rounded-2xl border-none shadow-sm focus:ring-2 focus:ring-teal-200 outline-none transition-all font-medium placeholder:text-stone-300" 
+                      />
+                    </div>
+                    <button 
+                      type="submit" disabled={status === SubmissionStatus.LOADING} 
+                      className="w-full py-5 bg-teal-900 hover:bg-teal-950 text-white rounded-2xl flex justify-center items-center gap-2 font-bold text-lg shadow-lg active:scale-[0.98] transition-all disabled:opacity-50"
+                    >
+                      {status === SubmissionStatus.LOADING ? <Loader2 className="animate-spin w-6 h-6" /> : <>{t.button} <ArrowRight className="w-6 h-6" /></>}
+                    </button>
+                    <p className="text-[10px] text-stone-400 italic leading-relaxed">{t.notice}</p>
+                  </form>
                 )}
-                <div className="bg-stone-100/80 p-4 rounded-xl text-[11px] text-stone-500 text-left border border-stone-200 leading-normal select-none">
-                  <strong>Notice:</strong> {t.notice}
-                </div>
-                <button 
-                  type="submit" disabled={status === SubmissionStatus.LOADING} 
-                  className="py-4 bg-teal-700 hover:bg-teal-800 text-white rounded-xl flex justify-center items-center gap-2 font-bold transition-all shadow-lg shadow-teal-700/20 active:scale-95 disabled:opacity-70 animate-vibrate-jump w-full"
-                >
-                  {status === SubmissionStatus.LOADING ? (
-                    <Loader2 className="animate-spin w-5 h-5" />
-                  ) : (
-                    <>{t.button} <ArrowRight className="w-5 h-5" /></>
-                  )}
-                </button>
-              </form>
-            )}
-            <p className="mt-6 text-[11px] text-stone-400 uppercase tracking-widest font-medium select-none">{t.brandName}</p>
+              </div>
+            </div>
+            
+            <div className="hidden lg:block relative">
+              <div className="w-[450px] h-[550px] bg-stone-200 rounded-[4rem] overflow-hidden relative rotate-2 shadow-2xl transition-transform hover:rotate-0 duration-700">
+                <img 
+                  src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=2071&auto=format&fit=crop" 
+                  alt="Well-being connection" 
+                  className="w-full h-full object-cover grayscale opacity-80 hover:grayscale-0 transition-all duration-700"
+                />
+                <div className="absolute inset-0 bg-teal-900/20 mix-blend-multiply"></div>
+              </div>
+              <div className="absolute -bottom-8 -left-8 bg-white p-8 rounded-3xl shadow-2xl max-w-xs -rotate-2">
+                <p className="text-stone-900 font-serif font-bold text-xl mb-2">{t.priceTag}</p>
+                <p className="text-stone-500 text-sm italic">Making high-quality emotional support a standard, not a luxury.</p>
+              </div>
+            </div>
           </div>
-        </div>
+        </section>
+
+        {/* VISION SECTION */}
+        <section className="bg-stone-900 text-stone-50 py-32 px-6">
+          <div className="max-w-7xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-24 items-center">
+              <div>
+                <h2 className="text-4xl sm:text-6xl font-serif font-bold mb-8 leading-tight">{t.visionTitle}</h2>
+                <div className="w-24 h-1 bg-teal-500 mb-8"></div>
+              </div>
+              <p className="text-2xl font-light text-stone-400 leading-relaxed italic">
+                {t.visionText}
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* PILLARS SECTION - Unique Layout */}
+        <section className="py-32 px-6 max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+            {[
+              { icon: <MessageSquare className="w-8 h-8" />, title: t.pillar1Title, text: t.pillar1Text },
+              { icon: <ShieldCheck className="w-8 h-8" />, title: t.pillar2Title, text: t.pillar2Text },
+              { icon: <Coins className="w-8 h-8" />, title: t.pillar3Title, text: t.pillar3Text },
+            ].map((pillar, i) => (
+              <div key={i} className="group relative">
+                <div className="p-10 bg-white rounded-3xl shadow-sm border border-stone-100 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
+                  <div className="text-teal-700 mb-8">{pillar.icon}</div>
+                  <h3 className="text-2xl font-serif font-bold text-stone-900 mb-4">{pillar.title}</h3>
+                  <p className="text-stone-600 leading-relaxed">{pillar.text}</p>
+                </div>
+                {/* Visual decoration */}
+                <div className="absolute -top-4 -right-4 w-24 h-24 bg-teal-50 rounded-full -z-10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* FAQ SECTION */}
+        <section className="py-32 px-6 max-w-3xl mx-auto">
+          <h2 className="text-4xl font-serif font-bold text-stone-900 mb-16 text-center">{t.faqTitle}</h2>
+          <div className="space-y-4">
+            <FAQItem q={t.faq1Q} a={t.faq1A} />
+            <FAQItem q={t.faq2Q} a={t.faq2A} />
+          </div>
+        </section>
+
       </main>
 
-      <footer className="py-12 px-8 border-t border-stone-200 flex flex-col md:flex-row justify-between items-center text-stone-500 text-sm bg-white/50 backdrop-blur-sm relative z-[120]">
-        <p>© 2025 Pluravita. {t.footerRights}</p>
-        <div className="flex gap-8 mt-6 md:mt-0 font-medium">
-          <button onClick={() => setActiveModal('LEGAL')} className="hover:text-teal-700 transition-colors">{t.legalNotice}</button>
-          <button onClick={() => setActiveModal('PRIVACY')} className="hover:text-teal-700 transition-colors">{t.privacyPolicy}</button>
-          <button onClick={() => setActiveModal('COOKIES')} className="hover:text-teal-700 transition-colors">{t.cookiesPolicy}</button>
+      {/* Editorial Footer */}
+      <footer className="bg-white border-t border-stone-200 py-24 px-6 sm:px-12 relative z-[120]">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16">
+          <div>
+            <div className="flex items-center gap-2 mb-8">
+              <div className="w-6 h-6 bg-stone-900 rounded-full"></div>
+              <span className="text-xl font-serif font-bold tracking-widest text-stone-900 uppercase">PLURAVITA</span>
+            </div>
+            <p className="text-stone-500 text-sm leading-relaxed max-w-xs">
+              A human-centric community reimagining emotional growth through empathy and transparency.
+            </p>
+          </div>
+          
+          <div className="flex flex-col gap-4 text-sm font-bold uppercase tracking-[0.2em] text-stone-400">
+            <span className="text-stone-900 text-xs mb-2">Legal</span>
+            <button onClick={() => setActiveModal('LEGAL')} className="hover:text-teal-700 text-left transition-colors">{t.legalNotice}</button>
+            <button onClick={() => setActiveModal('PRIVACY')} className="hover:text-teal-700 text-left transition-colors">{t.privacyPolicy}</button>
+            <button onClick={() => setActiveModal('COOKIES')} className="hover:text-teal-700 text-left transition-colors">{t.cookiesPolicy}</button>
+          </div>
+        </div>
+        
+        <div className="max-w-7xl mx-auto mt-24 pt-8 border-t border-stone-100 flex justify-between items-center text-[10px] font-bold uppercase tracking-[0.3em] text-stone-300">
+          <span>© 2025 Pluravita. {t.footerRights}</span>
+          <span>Designed with Empathy</span>
         </div>
       </footer>
     </div>
