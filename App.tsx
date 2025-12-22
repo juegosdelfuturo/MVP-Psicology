@@ -1,11 +1,11 @@
 
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { SubmissionStatus } from './types';
 import { GoogleGenAI } from "@google/genai";
 import { 
   Sparkles, ArrowRight, Loader2, X, Cookie, Globe, 
   ShieldAlert, CheckCircle2, ChevronDown, Heart, 
-  ShieldCheck, Coins, MessageSquare 
+  ShieldCheck, Coins, MessageSquare, Timer, Zap
 } from 'lucide-react';
 
 type ModalType = 'LEGAL' | 'PRIVACY' | 'COOKIES' | null;
@@ -56,7 +56,11 @@ const translations = {
     legalContent: "This website is operated by the Pluravita Community. All content is for informational purposes. For inquiries, please contact our support team. The provider reserves the right to modify services and terms at any time without prior notice.",
     privacyContent: "We value your privacy. Your data is collected solely for waitlist management and service updates. We do not sell your personal information to third parties. You may request data deletion at any time.",
     cookiesContent: "We use strictly necessary cookies to manage session security and user preferences. Analytical cookies may be used to improve site performance. You can manage your preferences through your browser settings.",
-    close: "Close"
+    close: "Close",
+    earlyBirdTitle: "Early Bird Offer",
+    earlyBirdDesc: "25% OFF forever for the next 15 members.",
+    earlyBirdSpots: "Only {n} spots left!",
+    earlyBirdCTA: "Claim discount"
   },
   es: {
     comingSoon: "Próximamente",
@@ -101,7 +105,11 @@ const translations = {
     legalContent: "Este sitio es operado por la Comunidad Pluravita. Todo el contenido tiene fines informativos. El proveedor se reserva el derecho de modificar los términos en cualquier momento.",
     privacyContent: "Valoramos tu privacidad. Tus datos se utilizan solo para la lista de espera y actualizaciones del servicio. Puedes solicitar su eliminación cuando desees.",
     cookiesContent: "Utilizamos cookies necesarias para la seguridad y preferencias del usuario. Puedes gestionarlas en la configuración de tu navegador.",
-    close: "Cerrar"
+    close: "Cerrar",
+    earlyBirdTitle: "Oferta Lanzamiento",
+    earlyBirdDesc: "25% de DESCUENTO de por vida para los próximos 15 miembros.",
+    earlyBirdSpots: "¡Solo quedan {n} plazas!",
+    earlyBirdCTA: "Conseguir descuento"
   },
   de: {
     comingSoon: "Demnächst",
@@ -146,7 +154,11 @@ const translations = {
     legalContent: "Impressum der Pluravita Community. Alle Inhalte dienen der Information. Der Anbieter behält sich Änderungen vor.",
     privacyContent: "Ihre Daten werden nur für die Warteliste verwendet. Wir geben keine Informationen an Dritte weiter.",
     cookiesContent: "Wir verwenden Cookies für Sicherheit und Präferenzen. Sie können diese im Browser verwalten.",
-    close: "Schließen"
+    close: "Schließen",
+    earlyBirdTitle: "Early Bird Angebot",
+    earlyBirdDesc: "25% RABATT lebenslang für die nächsten 15 Mitglieder.",
+    earlyBirdSpots: "Nur noch {n} Plätze frei!",
+    earlyBirdCTA: "Rabatt sichern"
   }
 };
 
@@ -176,6 +188,8 @@ const App: React.FC = () => {
   const [welcomeMessage, setWelcomeMessage] = useState<string>('');
   const [cookieStatus, setCookieStatus] = useState<CookieConsentStatus>('UNDECIDED');
   const [activeModal, setActiveModal] = useState<ModalType>(null);
+  const [spotsLeft, setSpotsLeft] = useState(7);
+  const formRef = useRef<HTMLDivElement>(null);
 
   const t = translations[lang];
 
@@ -202,6 +216,12 @@ const App: React.FC = () => {
     const savedConsent = localStorage.getItem('pluravita_cookie_consent');
     if (savedConsent === 'ACCEPTED') setCookieStatus('ACCEPTED');
     else if (savedConsent === 'REJECTED') setCookieStatus('REJECTED');
+    
+    // Random spot decrement simulation for urgency
+    const interval = setInterval(() => {
+      setSpotsLeft(prev => prev > 1 ? prev - (Math.random() > 0.9 ? 1 : 0) : 1);
+    }, 15000);
+    return () => clearInterval(interval);
   }, []);
 
   const handleAcceptCookies = () => {
@@ -214,6 +234,10 @@ const App: React.FC = () => {
     setCookieStatus('REJECTED');
   };
 
+  const scrollToForm = () => {
+    formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  };
+
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !name) return;
@@ -223,7 +247,7 @@ const App: React.FC = () => {
       const formResponse = await fetch("https://formspree.io/f/xldqwnej", {
         method: "POST",
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, language: lang, source: 'Pluravita' })
+        body: JSON.stringify({ name, email, language: lang, source: 'Pluravita', offer: 'Early Bird 25% OFF' })
       });
 
       if (!formResponse.ok) throw new Error("Formspree Error");
@@ -305,6 +329,36 @@ const App: React.FC = () => {
 
       {renderModal()}
 
+      {/* Discount Widget */}
+      {status !== SubmissionStatus.SUCCESS && cookieStatus === 'ACCEPTED' && (
+        <div className="fixed bottom-6 right-6 left-6 sm:left-auto z-[400] animate-fade-in sm:max-w-xs w-full">
+          <div className="bg-teal-900 text-white p-5 rounded-3xl shadow-2xl border-t-2 border-teal-400/30 overflow-hidden relative group">
+            <div className="absolute -top-4 -right-4 bg-teal-400/10 w-24 h-24 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
+            <div className="flex items-start gap-4 relative z-10">
+              <div className="bg-teal-400/20 p-2.5 rounded-2xl">
+                <Zap className="w-6 h-6 text-teal-300 animate-pulse" />
+              </div>
+              <div className="flex-1">
+                <h4 className="text-xs font-black uppercase tracking-[0.2em] text-teal-400 mb-1">{t.earlyBirdTitle}</h4>
+                <p className="text-sm font-medium leading-snug mb-3 text-teal-50/90">{t.earlyBirdDesc}</p>
+                <div className="flex items-center gap-2 mb-4">
+                   <div className="flex-1 h-1.5 bg-teal-950 rounded-full overflow-hidden">
+                      <div className="h-full bg-teal-400 transition-all duration-1000" style={{ width: `${(spotsLeft/15)*100}%` }}></div>
+                   </div>
+                   <span className="text-[10px] font-bold text-teal-400 whitespace-nowrap">{t.earlyBirdSpots.replace('{n}', spotsLeft.toString())}</span>
+                </div>
+                <button 
+                  onClick={scrollToForm}
+                  className="w-full py-2.5 bg-white text-teal-950 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-teal-50 active:scale-95 transition-all shadow-lg flex justify-center items-center gap-2"
+                >
+                  {t.earlyBirdCTA} <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {cookieStatus === 'UNDECIDED' && (
         <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-stone-900/95 backdrop-blur-md">
           <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 text-center border border-stone-200 animate-fade-in">
@@ -351,7 +405,7 @@ const App: React.FC = () => {
                 {t.subtitle}
               </p>
               
-              <div className="max-w-md">
+              <div className="max-w-md" ref={formRef}>
                 {status === SubmissionStatus.SUCCESS ? (
                   <div className="bg-white border border-teal-100 p-8 rounded-3xl shadow-xl animate-fade-in">
                     <div className="flex items-center gap-3 text-teal-800 font-bold mb-4">
