@@ -8,36 +8,47 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script>
       tailwind.config = {
         theme: {
           extend: {
+            colors: {
+              brand: {
+                50: '#f0fdf9',
+                100: '#ccfbf1',
+                200: '#99f6e4',
+                300: '#5eead4',
+                400: '#2dd4bf',
+                500: '#14b8a6',
+                600: '#0d9488',
+                700: '#0f766e',
+                primary: '#15a47c', // Terapify-style green
+                dark: '#0e6b52',
+              }
+            },
             fontFamily: {
               sans: ['Inter', 'sans-serif'],
-              serif: ['Merriweather', 'serif'],
+              display: ['Outfit', 'sans-serif'],
             },
             animation: {
-              marquee: 'marquee 15s linear infinite',
-              'fade-in': 'fadeIn 0.8s ease-out forwards',
-              'vibrate-jump': 'vibrate-jump 4s ease-in-out infinite',
+              'fade-in': 'fadeIn 1s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+              'vibrate-jump': 'vibrateJump 4s ease-in-out infinite',
             },
             keyframes: {
-              marquee: {
-                '0%': { transform: 'translateX(0)' },
-                '100%': { transform: 'translateX(-50%)' },
-              },
               fadeIn: {
-                '0%': { opacity: '0', transform: 'translateY(20px)' },
+                '0%': { opacity: '0', transform: 'translateY(15px)' },
                 '100%': { opacity: '1', transform: 'translateY(0)' },
               },
-              'vibrate-jump': {
-                '0%, 40%': { transform: 'translateY(0) rotate(0)' },
-                '50%': { transform: 'translateY(-18px) rotate(0)' },
-                '60%': { transform: 'translateY(-18px) rotate(-1.5deg)' },
-                '70%': { transform: 'translateY(-18px) rotate(1.5deg)' },
-                '80%': { transform: 'translateY(-18px) rotate(0)' },
-                '100%': { transform: 'translateY(0) rotate(0)' }
+              vibrateJump: {
+                '0%': { transform: 'translateY(0) rotate(0deg)' },
+                '10%': { transform: 'translateY(-14px) rotate(0deg)' },
+                '14%': { transform: 'translateY(-14px) rotate(-1.5deg)' },
+                '18%': { transform: 'translateY(-14px) rotate(1.5deg)' },
+                '22%': { transform: 'translateY(-14px) rotate(-1.5deg)' },
+                '26%': { transform: 'translateY(-14px) rotate(0deg)' },
+                '35%': { transform: 'translateY(0) rotate(0deg)' },
+                '100%': { transform: 'translateY(0) rotate(0deg)' }
               }
             }
           }
@@ -48,40 +59,19 @@
       html, body {
         overflow-x: hidden;
         width: 100%;
-        position: relative;
+        background-color: #ffffff;
+        scroll-behavior: smooth;
+        color: #1a1a1a;
       }
-      .ocean { 
-        height: 5%;
-        width: 100%;
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        background: transparent;
-        z-index: 0;
-        pointer-events: none;
+      #root { min-height: 100vh; display: flex; flex-direction: column; }
+      ::-webkit-scrollbar { width: 5px; }
+      ::-webkit-scrollbar-track { background: transparent; }
+      ::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 10px; }
+      ::-webkit-scrollbar-thumb:hover { background: #d1d5db; }
+      .bg-grid {
+        background-image: radial-gradient(#15a47c10 1px, transparent 1px);
+        background-size: 30px 30px;
       }
-      .wave {
-        background: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/85486/wave.svg) repeat-x; 
-        position: absolute;
-        top: -198px;
-        width: 6400px;
-        height: 198px;
-        animation: wave 25s cubic-bezier( 0.36, 0.45, 0.63, 0.53) infinite;
-        transform: translate3d(0, 0, 0);
-        opacity: 0.05;
-      }
-      .wave:nth-of-type(2) {
-        top: -175px;
-        animation: wave 25s cubic-bezier( 0.36, 0.45, 0.63, 0.53) -.125s infinite, swell 25s ease -1.25s infinite;
-        opacity: 0.1;
-      }
-      @keyframes wave { 0% { margin-left: 0; } 100% { margin-left: -1600px; } }
-      @keyframes swell { 0%, 100% { transform: translate3d(0,-20px,0); } 50% { transform: translate3d(0,5px,0); } }
-      #root { min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
-      ::-webkit-scrollbar { width: 6px; }
-      ::-webkit-scrollbar-track { background: #f5f5f4; }
-      ::-webkit-scrollbar-thumb { background: #d6d3d1; border-radius: 10px; }
-      ::-webkit-scrollbar-thumb:hover { background: #a8a29e; }
     </style>
     <script type="importmap">
     {
@@ -95,7 +85,7 @@
     }
     </script>
   </head>
-  <body class="bg-stone-50 antialiased overflow-x-hidden selection:bg-teal-100 selection:text-teal-900">
+  <body class="antialiased selection:bg-brand-100 selection:text-brand-dark">
     <div id="root"></div>
     <script type="module" src="index.tsx"></script>
   </body>
