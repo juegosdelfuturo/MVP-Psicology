@@ -5,7 +5,7 @@ import { GoogleGenAI } from "@google/genai";
 import { 
   Sparkles, ArrowRight, Loader2, X, Cookie, Globe, 
   ShieldAlert, CheckCircle2, ChevronDown, Heart, 
-  ShieldCheck, Coins, MessageSquare, Timer, Zap
+  ShieldCheck, Coins, MessageSquare, Zap
 } from 'lucide-react';
 
 type ModalType = 'LEGAL' | 'PRIVACY' | 'COOKIES' | null;
@@ -173,8 +173,8 @@ const FAQItem: React.FC<{ q: string; a: string }> = ({ q, a }) => {
         <span className="text-lg font-serif font-semibold text-stone-800 group-hover:text-teal-700 transition-colors">{q}</span>
         <ChevronDown className={`w-5 h-5 text-stone-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
       </button>
-      <div className={`overflow-hidden transition-all duration-300 ${isOpen ? 'max-h-48 mt-4 opacity-100' : 'max-h-0 opacity-0'}`}>
-        <p className="text-stone-600 leading-relaxed pb-2">{a}</p>
+      <div className={`overflow-hidden transition-all duration-300 ${isOpen ? 'max-h-64 mt-4 opacity-100' : 'max-h-0 opacity-0'}`}>
+        <p className="text-stone-600 leading-relaxed pb-2 text-sm sm:text-base">{a}</p>
       </div>
     </div>
   );
@@ -217,7 +217,6 @@ const App: React.FC = () => {
     if (savedConsent === 'ACCEPTED') setCookieStatus('ACCEPTED');
     else if (savedConsent === 'REJECTED') setCookieStatus('REJECTED');
     
-    // Random spot decrement simulation for urgency
     const interval = setInterval(() => {
       setSpotsLeft(prev => prev > 1 ? prev - (Math.random() > 0.9 ? 1 : 0) : 1);
     }, 15000);
@@ -286,14 +285,14 @@ const App: React.FC = () => {
 
     return (
       <div className="fixed inset-0 z-[500] flex items-center justify-center p-4 bg-stone-900/60 backdrop-blur-sm animate-fade-in">
-        <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full p-8 border border-stone-200 overflow-y-auto max-h-[90vh]">
+        <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full p-6 sm:p-8 border border-stone-200 overflow-y-auto max-h-[90vh]">
           <div className="flex justify-between items-center mb-6 sticky top-0 bg-white pb-4 border-b border-stone-100">
-            <h2 className="text-2xl font-serif font-bold text-stone-900">{title}</h2>
+            <h2 className="text-xl sm:text-2xl font-serif font-bold text-stone-900">{title}</h2>
             <button onClick={() => setActiveModal(null)} className="p-2 hover:bg-stone-100 rounded-full transition-colors">
-              <X className="w-6 h-6 text-stone-400" />
+              <X className="w-5 h-5 sm:w-6 sm:h-6 text-stone-400" />
             </button>
           </div>
-          <div className="text-stone-600 leading-relaxed mb-8 whitespace-pre-wrap">
+          <div className="text-stone-600 leading-relaxed mb-8 whitespace-pre-wrap text-sm sm:text-base">
             {content}
           </div>
           <button 
@@ -322,36 +321,35 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col font-sans relative bg-stone-50 overflow-x-hidden">
-      {/* Visual background layers */}
       <div className="fixed inset-0 z-0 pointer-events-none opacity-50">
         <div className="ocean"><div className="wave"></div><div className="wave"></div></div>
       </div>
 
       {renderModal()}
 
-      {/* Discount Widget */}
+      {/* Responsive Discount Widget */}
       {status !== SubmissionStatus.SUCCESS && cookieStatus === 'ACCEPTED' && (
-        <div className="fixed bottom-6 right-6 left-6 sm:left-auto z-[400] animate-fade-in sm:max-w-xs w-full">
-          <div className="bg-teal-900 text-white p-5 rounded-3xl shadow-2xl border-t-2 border-teal-400/30 overflow-hidden relative group">
+        <div className="fixed bottom-4 sm:bottom-6 right-4 sm:right-6 left-4 sm:left-auto z-[400] animate-fade-in sm:max-w-xs w-auto">
+          <div className="bg-teal-900 text-white p-4 sm:p-5 rounded-[2rem] sm:rounded-3xl shadow-2xl border-t border-teal-400/20 overflow-hidden relative group">
             <div className="absolute -top-4 -right-4 bg-teal-400/10 w-24 h-24 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
-            <div className="flex items-start gap-4 relative z-10">
-              <div className="bg-teal-400/20 p-2.5 rounded-2xl">
-                <Zap className="w-6 h-6 text-teal-300 animate-pulse" />
+            <div className="flex items-start gap-3 sm:gap-4 relative z-10">
+              <div className="bg-teal-400/20 p-2 sm:p-2.5 rounded-2xl shrink-0">
+                <Zap className="w-5 h-5 sm:w-6 sm:h-6 text-teal-300 animate-pulse" />
               </div>
-              <div className="flex-1">
-                <h4 className="text-xs font-black uppercase tracking-[0.2em] text-teal-400 mb-1">{t.earlyBirdTitle}</h4>
-                <p className="text-sm font-medium leading-snug mb-3 text-teal-50/90">{t.earlyBirdDesc}</p>
-                <div className="flex items-center gap-2 mb-4">
+              <div className="flex-1 min-w-0">
+                <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-teal-400 mb-0.5">{t.earlyBirdTitle}</h4>
+                <p className="text-xs sm:text-sm font-medium leading-snug mb-2 sm:mb-3 text-teal-50/90">{t.earlyBirdDesc}</p>
+                <div className="flex items-center gap-2 mb-3 sm:mb-4">
                    <div className="flex-1 h-1.5 bg-teal-950 rounded-full overflow-hidden">
                       <div className="h-full bg-teal-400 transition-all duration-1000" style={{ width: `${(spotsLeft/15)*100}%` }}></div>
                    </div>
-                   <span className="text-[10px] font-bold text-teal-400 whitespace-nowrap">{t.earlyBirdSpots.replace('{n}', spotsLeft.toString())}</span>
+                   <span className="text-[9px] sm:text-[10px] font-bold text-teal-400 whitespace-nowrap">{t.earlyBirdSpots.replace('{n}', spotsLeft.toString())}</span>
                 </div>
                 <button 
                   onClick={scrollToForm}
-                  className="w-full py-2.5 bg-white text-teal-950 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-teal-50 active:scale-95 transition-all shadow-lg flex justify-center items-center gap-2"
+                  className="w-full py-2 sm:py-2.5 bg-white text-teal-950 rounded-xl text-[10px] sm:text-xs font-black uppercase tracking-widest hover:bg-teal-50 active:scale-95 transition-all shadow-lg flex justify-center items-center gap-2"
                 >
-                  {t.earlyBirdCTA} <ArrowRight className="w-3.5 h-3.5" />
+                  {t.earlyBirdCTA} <ArrowRight className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                 </button>
               </div>
             </div>
@@ -361,58 +359,57 @@ const App: React.FC = () => {
 
       {cookieStatus === 'UNDECIDED' && (
         <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-stone-900/95 backdrop-blur-md">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 text-center border border-stone-200 animate-fade-in">
-            <Cookie className="w-12 h-12 text-teal-600 mx-auto mb-4" />
-            <h2 className="text-2xl font-serif font-bold text-stone-900 mb-2">{t.cookieTitle}</h2>
-            <p className="text-stone-600 mb-6 leading-relaxed">{t.cookieDesc}</p>
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 sm:p-8 text-center border border-stone-200 animate-fade-in">
+            <Cookie className="w-10 h-10 sm:w-12 sm:h-12 text-teal-600 mx-auto mb-4" />
+            <h2 className="text-xl sm:text-2xl font-serif font-bold text-stone-900 mb-2">{t.cookieTitle}</h2>
+            <p className="text-stone-600 mb-6 leading-relaxed text-sm sm:text-base">{t.cookieDesc}</p>
             <div className="flex flex-col gap-3">
               <button onClick={handleAcceptCookies} className="w-full py-3 bg-teal-700 text-white rounded-xl font-bold transition-transform active:scale-95">{t.cookieBtnAccept}</button>
-              <button onClick={handleRejectCookies} className="w-full py-3 text-stone-400 text-sm hover:text-stone-600 transition-colors">{t.cookieBtnReject}</button>
+              <button onClick={handleRejectCookies} className="w-full py-3 text-stone-400 text-xs sm:text-sm hover:text-stone-600 transition-colors">{t.cookieBtnReject}</button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Editorial Navigation */}
-      <nav className="w-full py-8 px-6 sm:px-12 max-w-7xl mx-auto flex justify-between items-center relative z-[60]">
+      {/* Editorial Navigation - Responsive */}
+      <nav className="w-full py-6 sm:py-8 px-6 sm:px-12 max-w-7xl mx-auto flex justify-between items-center relative z-[60]">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-teal-800 rounded-full flex items-center justify-center text-white font-serif font-bold text-lg">P</div>
-          <span className="text-xl font-serif font-bold tracking-widest text-teal-900 uppercase">PLURAVITA</span>
+          <div className="w-7 h-7 sm:w-8 sm:h-8 bg-teal-800 rounded-full flex items-center justify-center text-white font-serif font-bold text-base sm:text-lg">P</div>
+          <span className="text-base sm:text-xl font-serif font-bold tracking-widest text-teal-900 uppercase">PLURAVITA</span>
         </div>
-        <div className="flex items-center gap-4 text-xs font-bold uppercase tracking-widest text-stone-400">
+        <div className="flex items-center gap-3 sm:gap-4 text-[10px] sm:text-xs font-bold uppercase tracking-widest text-stone-400">
           <button onClick={() => setLang('en')} className={`${lang === 'en' ? 'text-teal-700 border-b-2 border-teal-700' : ''} transition-all pb-1`}>EN</button>
           <button onClick={() => setLang('es')} className={`${lang === 'es' ? 'text-teal-700 border-b-2 border-teal-700' : ''} transition-all pb-1`}>ES</button>
           <button onClick={() => setLang('de')} className={`${lang === 'de' ? 'text-teal-700 border-b-2 border-teal-700' : ''} transition-all pb-1`}>DE</button>
         </div>
       </nav>
 
-      {/* Main Content Area */}
       <main className="relative z-[100]">
         
-        {/* HERO SECTION - Editorial Style */}
-        <section className="min-h-[70vh] flex flex-col justify-center px-6 sm:px-12 max-w-7xl mx-auto pt-12 pb-24">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 bg-teal-100 text-teal-800 rounded-full text-[10px] font-bold tracking-[0.2em] uppercase mb-8">
+        {/* HERO SECTION - Refined sizes for mobile */}
+        <section className="min-h-[70vh] flex flex-col justify-center px-6 sm:px-12 max-w-7xl mx-auto pt-8 sm:pt-12 pb-24">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            <div className="text-left">
+              <div className="inline-flex items-center gap-2 px-3 py-1 bg-teal-100 text-teal-800 rounded-full text-[9px] sm:text-[10px] font-bold tracking-[0.2em] uppercase mb-6 sm:mb-8">
                 <Sparkles className="w-3 h-3" />
                 {t.comingSoon}
               </div>
-              <h1 className="text-6xl sm:text-8xl font-serif font-bold text-stone-900 mb-8 leading-[0.9] tracking-tight">
+              <h1 className="text-5xl sm:text-7xl lg:text-8xl font-serif font-bold text-stone-900 mb-6 sm:mb-8 leading-tight tracking-tight">
                 {t.title1} <br/>
                 <span className="text-teal-700 italic">{t.title2}</span>
               </h1>
-              <p className="text-xl text-stone-600 mb-12 max-w-lg leading-relaxed font-light">
+              <p className="text-lg sm:text-xl text-stone-600 mb-10 sm:mb-12 max-w-lg leading-relaxed font-light">
                 {t.subtitle}
               </p>
               
-              <div className="max-w-md" ref={formRef}>
+              <div className="max-w-md w-full" ref={formRef}>
                 {status === SubmissionStatus.SUCCESS ? (
-                  <div className="bg-white border border-teal-100 p-8 rounded-3xl shadow-xl animate-fade-in">
+                  <div className="bg-white border border-teal-100 p-6 sm:p-8 rounded-3xl shadow-xl animate-fade-in">
                     <div className="flex items-center gap-3 text-teal-800 font-bold mb-4">
-                      <CheckCircle2 className="w-6 h-6" />
-                      <span>{t.successTitle}</span>
+                      <CheckCircle2 className="w-5 h-5 sm:w-6 sm:h-6" />
+                      <span className="text-sm sm:text-base">{t.successTitle}</span>
                     </div>
-                    <p className="text-stone-700 italic leading-relaxed">"{welcomeMessage}"</p>
+                    <p className="text-stone-700 italic leading-relaxed text-sm sm:text-base">"{welcomeMessage}"</p>
                     <button 
                       onClick={() => { setStatus(SubmissionStatus.IDLE); setName(''); setEmail(''); }} 
                       className="mt-6 text-xs text-teal-600 hover:text-teal-800 underline font-medium"
@@ -421,24 +418,24 @@ const App: React.FC = () => {
                     </button>
                   </div>
                 ) : (
-                  <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                  <form onSubmit={handleSubmit} className="flex flex-col gap-3 sm:gap-4">
                     <div className="flex flex-col sm:flex-row gap-3">
                       <input 
                         type="text" placeholder={t.namePlaceholder} value={name} onChange={e => setName(e.target.value)} required 
-                        className="flex-1 px-6 py-4 rounded-2xl border-none shadow-sm focus:ring-2 focus:ring-teal-200 outline-none transition-all font-medium placeholder:text-stone-300" 
+                        className="flex-1 px-5 sm:px-6 py-4 rounded-2xl border-none shadow-sm focus:ring-2 focus:ring-teal-200 outline-none transition-all font-medium text-sm sm:text-base placeholder:text-stone-300" 
                       />
                       <input 
                         type="email" placeholder={t.emailPlaceholder} value={email} onChange={e => setEmail(e.target.value)} required 
-                        className="flex-1 px-6 py-4 rounded-2xl border-none shadow-sm focus:ring-2 focus:ring-teal-200 outline-none transition-all font-medium placeholder:text-stone-300" 
+                        className="flex-1 px-5 sm:px-6 py-4 rounded-2xl border-none shadow-sm focus:ring-2 focus:ring-teal-200 outline-none transition-all font-medium text-sm sm:text-base placeholder:text-stone-300" 
                       />
                     </div>
                     <button 
                       type="submit" disabled={status === SubmissionStatus.LOADING} 
-                      className="w-full py-5 bg-teal-900 hover:bg-teal-950 text-white rounded-2xl flex justify-center items-center gap-2 font-bold text-lg shadow-lg active:scale-[0.98] transition-all disabled:opacity-50"
+                      className="w-full py-4 sm:py-5 bg-teal-900 hover:bg-teal-950 text-white rounded-2xl flex justify-center items-center gap-2 font-bold text-base sm:text-lg shadow-lg active:scale-[0.98] transition-all disabled:opacity-50"
                     >
-                      {status === SubmissionStatus.LOADING ? <Loader2 className="animate-spin w-6 h-6" /> : <>{t.button} <ArrowRight className="w-6 h-6" /></>}
+                      {status === SubmissionStatus.LOADING ? <Loader2 className="animate-spin w-5 h-5 sm:w-6 sm:h-6" /> : <>{t.button} <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6" /></>}
                     </button>
-                    <p className="text-[10px] text-stone-400 italic leading-relaxed">{t.notice}</p>
+                    <p className="text-[9px] sm:text-[10px] text-stone-400 italic leading-relaxed">{t.notice}</p>
                   </form>
                 )}
               </div>
@@ -461,45 +458,44 @@ const App: React.FC = () => {
           </div>
         </section>
 
-        {/* VISION SECTION */}
-        <section className="bg-stone-900 text-stone-50 py-32 px-6">
+        {/* VISION SECTION - Responsive typography */}
+        <section className="bg-stone-900 text-stone-50 py-20 sm:py-32 px-6">
           <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-24 items-center">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 sm:gap-24 items-start sm:items-center">
               <div>
-                <h2 className="text-4xl sm:text-6xl font-serif font-bold mb-8 leading-tight">{t.visionTitle}</h2>
-                <div className="w-24 h-1 bg-teal-500 mb-8"></div>
+                <h2 className="text-3xl sm:text-5xl lg:text-6xl font-serif font-bold mb-6 sm:mb-8 leading-tight">{t.visionTitle}</h2>
+                <div className="w-16 sm:w-24 h-1 bg-teal-500 mb-8"></div>
               </div>
-              <p className="text-2xl font-light text-stone-400 leading-relaxed italic">
+              <p className="text-xl sm:text-2xl font-light text-stone-400 leading-relaxed italic">
                 {t.visionText}
               </p>
             </div>
           </div>
         </section>
 
-        {/* PILLARS SECTION - Unique Layout */}
-        <section className="py-32 px-6 max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+        {/* PILLARS SECTION - Grid adjusts nicely */}
+        <section className="py-20 sm:py-32 px-6 max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-12">
             {[
-              { icon: <MessageSquare className="w-8 h-8" />, title: t.pillar1Title, text: t.pillar1Text },
-              { icon: <ShieldCheck className="w-8 h-8" />, title: t.pillar2Title, text: t.pillar2Text },
-              { icon: <Coins className="w-8 h-8" />, title: t.pillar3Title, text: t.pillar3Text },
+              { icon: <MessageSquare className="w-7 h-7 sm:w-8 sm:h-8" />, title: t.pillar1Title, text: t.pillar1Text },
+              { icon: <ShieldCheck className="w-7 h-7 sm:w-8 sm:h-8" />, title: t.pillar2Title, text: t.pillar2Text },
+              { icon: <Coins className="w-7 h-7 sm:w-8 sm:h-8" />, title: t.pillar3Title, text: t.pillar3Text },
             ].map((pillar, i) => (
               <div key={i} className="group relative">
-                <div className="p-10 bg-white rounded-3xl shadow-sm border border-stone-100 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
-                  <div className="text-teal-700 mb-8">{pillar.icon}</div>
-                  <h3 className="text-2xl font-serif font-bold text-stone-900 mb-4">{pillar.title}</h3>
-                  <p className="text-stone-600 leading-relaxed">{pillar.text}</p>
+                <div className="p-8 sm:p-10 bg-white rounded-3xl shadow-sm border border-stone-100 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
+                  <div className="text-teal-700 mb-6 sm:mb-8">{pillar.icon}</div>
+                  <h3 className="text-xl sm:text-2xl font-serif font-bold text-stone-900 mb-3 sm:mb-4">{pillar.title}</h3>
+                  <p className="text-sm sm:text-base text-stone-600 leading-relaxed">{pillar.text}</p>
                 </div>
-                {/* Visual decoration */}
-                <div className="absolute -top-4 -right-4 w-24 h-24 bg-teal-50 rounded-full -z-10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <div className="absolute -top-4 -right-4 w-20 h-20 sm:w-24 sm:h-24 bg-teal-50 rounded-full -z-10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
               </div>
             ))}
           </div>
         </section>
 
         {/* FAQ SECTION */}
-        <section className="py-32 px-6 max-w-3xl mx-auto">
-          <h2 className="text-4xl font-serif font-bold text-stone-900 mb-16 text-center">{t.faqTitle}</h2>
+        <section className="py-20 sm:py-32 px-6 max-w-3xl mx-auto">
+          <h2 className="text-3xl sm:text-4xl font-serif font-bold text-stone-900 mb-12 sm:mb-16 text-center">{t.faqTitle}</h2>
           <div className="space-y-4">
             <FAQItem q={t.faq1Q} a={t.faq1A} />
             <FAQItem q={t.faq2Q} a={t.faq2A} />
@@ -508,30 +504,30 @@ const App: React.FC = () => {
 
       </main>
 
-      {/* Editorial Footer */}
-      <footer className="bg-white border-t border-stone-200 py-24 px-6 sm:px-12 relative z-[120]">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16">
-          <div>
-            <div className="flex items-center gap-2 mb-8">
+      {/* Editorial Footer - Responsive spacing */}
+      <footer className="bg-white border-t border-stone-200 py-16 sm:py-24 px-6 sm:px-12 relative z-[120]">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 sm:gap-16">
+          <div className="text-left">
+            <div className="flex items-center gap-2 mb-6 sm:mb-8">
               <div className="w-6 h-6 bg-stone-900 rounded-full"></div>
-              <span className="text-xl font-serif font-bold tracking-widest text-stone-900 uppercase">PLURAVITA</span>
+              <span className="text-lg sm:text-xl font-serif font-bold tracking-widest text-stone-900 uppercase">PLURAVITA</span>
             </div>
             <p className="text-stone-500 text-sm leading-relaxed max-w-xs">
               A human-centric community reimagining emotional growth through empathy and transparency.
             </p>
           </div>
           
-          <div className="flex flex-col gap-4 text-sm font-bold uppercase tracking-[0.2em] text-stone-400">
-            <span className="text-stone-900 text-xs mb-2">Legal</span>
+          <div className="flex flex-col gap-4 text-xs sm:text-sm font-bold uppercase tracking-[0.2em] text-stone-400">
+            <span className="text-stone-900 text-[10px] sm:text-xs mb-2">Legal</span>
             <button onClick={() => setActiveModal('LEGAL')} className="hover:text-teal-700 text-left transition-colors">{t.legalNotice}</button>
             <button onClick={() => setActiveModal('PRIVACY')} className="hover:text-teal-700 text-left transition-colors">{t.privacyPolicy}</button>
             <button onClick={() => setActiveModal('COOKIES')} className="hover:text-teal-700 text-left transition-colors">{t.cookiesPolicy}</button>
           </div>
         </div>
         
-        <div className="max-w-7xl mx-auto mt-24 pt-8 border-t border-stone-100 flex justify-between items-center text-[10px] font-bold uppercase tracking-[0.3em] text-stone-300">
+        <div className="max-w-7xl mx-auto mt-16 sm:mt-24 pt-8 border-t border-stone-100 flex flex-col sm:flex-row justify-between items-center gap-4 text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.3em] text-stone-300">
           <span>© 2025 Pluravita. {t.footerRights}</span>
-          <span>Designed with Empathy</span>
+          <span className="hidden sm:inline">Designed with Empathy</span>
         </div>
       </footer>
     </div>

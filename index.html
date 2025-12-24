@@ -3,7 +3,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
     <title>Pluravita - Well-being Support</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -45,6 +45,11 @@
       }
     </script>
     <style>
+      html, body {
+        overflow-x: hidden;
+        width: 100%;
+        position: relative;
+      }
       .ocean { 
         height: 5%;
         width: 100%;
@@ -72,8 +77,8 @@
       }
       @keyframes wave { 0% { margin-left: 0; } 100% { margin-left: -1600px; } }
       @keyframes swell { 0%, 100% { transform: translate3d(0,-20px,0); } 50% { transform: translate3d(0,5px,0); } }
-      #root { min-height: 100vh; display: flex; flex-direction: column; }
-      ::-webkit-scrollbar { width: 8px; }
+      #root { min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
+      ::-webkit-scrollbar { width: 6px; }
       ::-webkit-scrollbar-track { background: #f5f5f4; }
       ::-webkit-scrollbar-thumb { background: #d6d3d1; border-radius: 10px; }
       ::-webkit-scrollbar-thumb:hover { background: #a8a29e; }
