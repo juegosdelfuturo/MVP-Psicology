@@ -3,7 +3,7 @@ import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { SubmissionStatus } from './types';
 import { GoogleGenAI } from "@google/genai";
 import { 
-  Sparkles, ArrowRight, Loader2, X, Cookie, ShieldAlert, CheckCircle2, ChevronDown, ShieldCheck, Coins, MessageSquare, Zap, Heart
+  Sparkles, ArrowRight, Loader2, X, Cookie, ShieldAlert, CheckCircle2, ChevronDown, ShieldCheck, Heart, GraduationCap, Users, Globe, BookOpen, Wallet
 } from 'lucide-react';
 
 type ModalType = 'LEGAL' | 'PRIVACY' | 'COOKIES' | null;
@@ -12,157 +12,142 @@ type Language = 'en' | 'es' | 'de';
 
 const translations = {
   en: {
-    comingSoon: "Join the Future",
-    title1: "Feel better.",
-    title2: "Live better.",
-    subtitle: "Professional emotional support and life coaching designed for your well-being. Affordable, human, and secure.",
-    priceTag: "Sessions from €20/hour.",
-    priceNotice: "Better connection leads to a better life. We make it simple.",
-    namePlaceholder: "Full Name",
-    emailPlaceholder: "Email address",
-    notice: "Pluravita: Emotional support, not a medical clinic.",
-    button: "Get Early Access",
-    successTitle: "Welcome home!",
-    defaultWelcome: "Your journey to well-being starts today.",
-    registerAnother: "Join with another account",
-    legalNotice: "Legal Information",
-    privacyPolicy: "Privacy Policy",
-    cookiesPolicy: "Cookies Policy",
-    legalContent: "Pluravita is a wellness platform. We provide emotional support and coaching services. We are not a medical clinic or emergency service provider.",
-    privacyContent: "Your data is treated with the utmost care. We use industry-standard encryption to protect your personal information and never share it without consent.",
-    cookiesContent: "We only use essential cookies necessary for the website's security and basic functionality. No tracking cookies are used without your permission.",
+    title1: "Stop putting off your well-being due to the cost of therapy.",
+    subtitle: "A private psychologist shouldn't be a luxury. Pluravita offers ethical support for just €20/h.",
+    leadMagnet: "Get our 'Ethics Guide' + Priority Access.",
+    priceTag: "Support for €20/h.",
+    namePlaceholder: "Name",
+    emailPlaceholder: "Email",
+    notice: "Emotional mentoring, not a clinic.",
+    button: "Get support for €20",
+    successTitle: "You're on the list!",
+    defaultWelcome: "We hear you. Check your email for the guide.",
+    registerAnother: "Use another account",
+    legalNotice: "Legal",
+    privacyPolicy: "Privacy",
+    cookiesPolicy: "Cookies",
+    legalContent: "Pluravita is a wellness platform. We provide emotional support and coaching services. We are not a medical clinic.",
+    privacyContent: "Your data is treated with the utmost care.",
+    cookiesContent: "We only use essential cookies.",
     cookieTitle: "Privacy First",
-    cookieDesc: "We use essential cookies to ensure your safety and a seamless experience.",
+    cookieDesc: "We use essential cookies for a safe experience.",
     cookieBtnAccept: "I Accept",
     cookieBtnReject: "Decline",
     restrictedTitle: "Access Restricted",
-    restrictedDesc: "We need your consent to provide a secure environment.",
+    restrictedDesc: "Consent is required for safety.",
     restrictedAction: "Accept and continue",
-    aiPrompt: (name: string) => `Generate a very short, warm, and professional thank you message in English for someone named "${name}" who has just joined a waitlist for a well-being community called Pluravita. Use a friendly therapist-like tone. Max 18 words.`,
-    footerRights: "Pluravita. All rights reserved.",
+    aiPrompt: (name: string) => `Generate a short, warm welcome in English for ${name}. Emphasize affordable emotional support. Max 15 words.`,
     brandName: "Pluravita",
-    visionTitle: "A new standard in emotional health.",
-    visionText: "Quality mental support shouldn't be a luxury. We provide a safe haven for human connection and emotional growth.",
-    pillar1Title: "Verified Empathy",
-    pillar1Text: "Our mentors are selected for their human quality and life experience.",
-    pillar2Title: "Safe & Private",
-    pillar2Text: "End-to-end security. Your peace of mind is our absolute priority.",
-    pillar3Title: "Accessible Support",
-    pillar3Text: "Flat rates that allow you to focus on growing, not on the invoice.",
-    faqTitle: "Common Questions",
-    faq1Q: "Is this professional therapy?",
-    faq1A: "No. Pluravita connects you with emotional mentors and life coaches. We complement clinical therapy but do not replace psychiatric treatments.",
-    faq2Q: "How soon can I start?",
-    faq2A: "We are currently in private beta. Joining the waitlist gives you priority access and exclusive benefits.",
+    visionTitle: "Mental health isn't a privilege.",
+    visionSubtitle: "No one should struggle alone because they can't afford clinical rates.",
+    pillar1Title: "Accessibility",
+    pillar1Text: "Human sessions for a flat rate of €20.",
+    pillar2Title: "Ethical Mentors",
+    pillar2Text: "Formed professionals who know the limits.",
+    pillar3Title: "Safe Space",
+    pillar3Text: "Rigor and empathy for your growth.",
+    whyNowTitle: "The change starts now.",
+    whyNowText: "The first 100 members get founder rates. Secure your spot.",
+    faqTitle: "F.A.Q.",
+    faq1Q: "Why €20?",
+    faq1A: "We focus on mentoring, not clinical pathology, allowing us to keep costs fair.",
+    faq2Q: "How do I start?",
+    faq2A: "Join the list. We'll invite you soon.",
     close: "Close",
-    earlyBirdTitle: "Welcome Offer",
-    earlyBirdDesc: "25% OFF your first session for the next 15 members.",
-    earlyBirdSpots: "Only {n} spots left!",
-    earlyBirdCTA: "Claim my discount",
-    footerDesc: "Designing clarity. Building connections. Promoting human well-being for a better tomorrow.",
-    empathyStandard: "Empathy as a Standard"
+    footerDesc: "Democratizing empathy.",
+    empathyStandard: "Affordable Support"
   },
   es: {
-    comingSoon: "Próximamente",
-    title1: "Siéntete mejor.",
-    title2: "Vive mejor.",
-    subtitle: "Apoyo emocional profesional y coaching diseñado para tu bienestar. Accesible, humano y seguro.",
-    priceTag: "Sesiones desde 20€/hora.",
-    priceNotice: "Una mejor conexión conduce a una vida mejor. Lo hacemos simple.",
-    namePlaceholder: "Nombre completo",
-    emailPlaceholder: "Correo electrónico",
-    notice: "Aviso: Pluravita es apoyo emocional, no una clínica médica.",
-    button: "Unirse a la lista",
-    successTitle: "¡Bienvenido/a!",
-    defaultWelcome: "Tu camino hacia el bienestar comienza hoy.",
-    registerAnother: "Registrar otra cuenta",
-    legalNotice: "Información Legal",
+    title1: "Tu bienestar no puede esperar a que puedas pagar 70€.",
+    subtitle: "Un psicólogo no debería ser un lujo. Pluravita ofrece apoyo ético y humano por solo 20€/h.",
+    leadMagnet: "Recibe la 'Guía de Ética' + Acceso prioritario.",
+    priceTag: "Apoyo por 20€/h.",
+    namePlaceholder: "Nombre",
+    emailPlaceholder: "Email",
+    notice: "Mentoría emocional, no clínica.",
+    button: "Apoyo por 20€",
+    successTitle: "¡Ya estás dentro!",
+    defaultWelcome: "Te escuchamos. Revisa tu email para la guía.",
+    registerAnother: "Registrar otro correo",
+    legalNotice: "Legal",
     privacyPolicy: "Privacidad",
     cookiesPolicy: "Cookies",
-    legalContent: "Pluravita es una plataforma de bienestar. Ofrecemos apoyo emocional y coaching. No somos una clínica médica ni servicio de emergencias.",
-    privacyContent: "Tus datos son tratados con el mayor cuidado. Usamos cifrado estándar para proteger tu información y nunca la compartimos sin consentimiento.",
-    cookiesContent: "Solo usamos cookies esenciales para la seguridad y funcionalidad básica del sitio. No usamos cookies de rastreo sin permiso.",
+    legalContent: "Pluravita es una plataforma de bienestar. Ofrecemos apoyo emocional y coaching. No somos una clínica médica.",
+    privacyContent: "Tus datos son tratados con el mayor cuidado.",
+    cookiesContent: "Solo usamos cookies esenciales.",
     cookieTitle: "Privacidad",
-    cookieDesc: "Utilizamos cookies esenciales para garantizar un entorno seguro.",
+    cookieDesc: "Usamos cookies esenciales para tu seguridad.",
     cookieBtnAccept: "Aceptar",
     cookieBtnReject: "Rechazar",
     restrictedTitle: "Acceso Restringido",
-    restrictedDesc: "Necesitamos tu consentimiento para garantizar la seguridad del sitio.",
+    restrictedDesc: "Necesitamos tu consentimiento para continuar.",
     restrictedAction: "Aceptar y continuar",
-    aiPrompt: (name: string) => `Genera un mensaje de agradecimiento muy corto, cálido y profesional en español para ${name} por unirse a Pluravita. Usa un tono empático. Máximo 18 palabras.`,
-    footerRights: "Pluravita. Todos los derechos reservados.",
+    aiPrompt: (name: string) => `Genera un mensaje corto y empático para ${name}. El bienestar no tiene por qué ser caro con Pluravita. Máximo 15 palabras.`,
     brandName: "Pluravita",
-    visionTitle: "Un nuevo estándar en salud emocional.",
-    visionText: "El apoyo mental no debe ser un lujo. Creamos un espacio seguro para la conexión humana y el crecimiento.",
-    pillar1Title: "Empatía Verificada",
-    pillar1Text: "Mentores seleccionados por su calidad humana y experiencia de vida real.",
-    pillar2Title: "Seguro y Privado",
-    pillar2Text: "Seguridad de extremo a extremo. Tu tranquilidad es nuestra prioridad.",
-    pillar3Title: "Apoyo Accesible",
-    pillar3Text: "Tarifas claras que te permiten enfocarte en crecer, no en la factura.",
-    faqTitle: "Preguntas frecuentes",
-    faq1Q: "¿Es esto terapia profesional?",
-    faq1A: "No. Pluravita te conecta con mentores emocionales y coaches. Complementamos la terapia clínica pero no sustituimos tratamientos psiquiátricos.",
-    faq2Q: "¿Cuándo puedo empezar?",
-    faq2A: "Estamos en fase beta privada. Unirte a la lista te da acceso prioritario y beneficios exclusivos.",
+    visionTitle: "La salud mental no es un privilegio.",
+    visionSubtitle: "Nadie debería estar solo por no poder pagar tarifas de lujo.",
+    pillar1Title: "Accesibilidad",
+    pillar1Text: "Sesiones humanas por una tarifa plana de 20€.",
+    pillar2Title: "Ética",
+    pillar2Text: "Claridad entre acompañamiento y clínica.",
+    pillar3Title: "Seguridad",
+    pillar3Text: "Comunidad basada en rigor y empatía.",
+    whyNowTitle: "Empieza ahora.",
+    whyNowText: "Los primeros 100 miembros aseguran precio de fundador.",
+    faqTitle: "Preguntas",
+    faq1Q: "¿Por qué 20€?",
+    faq1A: "Optimizamos la red de mentoría para ofrecer precios justos sin comprometer la ética.",
+    faq2Q: "¿Cómo empiezo?",
+    faq2A: "Únete a la lista y te avisaremos para la beta privada.",
     close: "Cerrar",
-    earlyBirdTitle: "Oferta de Bienvenida",
-    earlyBirdDesc: "25% de DESCUENTO en tu primera sesión para los próximos 15 miembros.",
-    earlyBirdSpots: "¡Solo quedan {n}!",
-    earlyBirdCTA: "Reclamar mi descuento",
-    footerDesc: "Diseñando claridad. Construyendo conexiones. Promoviendo el bienestar humano para un mejor mañana.",
-    empathyStandard: "La empatía como estándar"
+    footerDesc: "Democratizando la empatía.",
+    empathyStandard: "Apoyo para todos"
   },
   de: {
-    comingSoon: "Demnächst",
-    title1: "Besser fühlen.",
-    title2: "Besser leben.",
-    subtitle: "Professionelle emotionale Unterstützung und Coaching für Ihr Wohlbefinden. Erschwinglich, menschlich und sicher.",
-    priceTag: "Sitzungen ab 20€/Std.",
-    priceNotice: "Eine bessere Verbindung führt zu einem besseren Leben. Wir machen es einfach.",
-    namePlaceholder: "Vollständiger Name",
-    emailPlaceholder: "E-Mail-Adresse",
-    notice: "Hinweis: Emotionale Unterstützung, keine medizinische Klinik.",
-    button: "Auf die Liste",
+    title1: "Warten Sie nicht länger auf Ihr Wohlbefinden.",
+    subtitle: "Psychologische Hilfe sollte kein Luxus sein. Ethisches Mentoring für nur 20€/Std.",
+    leadMagnet: "Erhalten Sie den 'Ethik-Leitfaden' + Priorität.",
+    priceTag: "Hilfe für 20€/Std.",
+    namePlaceholder: "Name",
+    emailPlaceholder: "E-Mail",
+    notice: "Mentoring, keine Klinik.",
+    button: "Hilfe für 20€ erhalten",
     successTitle: "Willkommen!",
-    defaultWelcome: "Ihre Reise zum Wohlbefinden beginnt heute.",
-    registerAnother: "Weiteres Konto anmelden",
+    defaultWelcome: "Wir haben Sie gehört. Prüfen Sie Ihre E-Mails.",
+    registerAnother: "Anderes Konto",
     legalNotice: "Impressum",
     privacyPolicy: "Datenschutz",
     cookiesPolicy: "Cookies",
-    legalContent: "Pluravita ist eine Plattform für emotionales Wohlbefinden. Wir sind keine medizinische Einrichtung und bieten keine psychiatrische Hilfe.",
-    privacyContent: "Ihre Daten werden mit größter Sorgfalt behandelt. Wir nutzen Verschlüsselung, um Ihre Informationen zu schützen.",
-    cookiesContent: "Wir verwenden nur notwendige Cookies für die Sicherheit der Webseite. Keine Werbecookies ohne Zustimmung.",
+    legalContent: "Pluravita ist eine Wellness-Plattform.",
+    privacyContent: "Ihre Daten sind sicher.",
+    cookiesContent: "Nur notwendige Cookies.",
     cookieTitle: "Datenschutz",
-    cookieDesc: "Wir verwenden Cookies für Ihre Sicherheit und ein optimales Erlebnis.",
+    cookieDesc: "Essenzielle Cookies für Ihre Sicherheit.",
     cookieBtnAccept: "Akzeptieren",
     cookieBtnReject: "Ablehnen",
-    restrictedTitle: "Zugriff eingeschränkt",
-    restrictedDesc: "Wir benötigen Ihre Zustimmung für eine sichere Umgebung.",
+    restrictedTitle: "Eingeschränkt",
+    restrictedDesc: "Zustimmung erforderlich.",
     restrictedAction: "Akzeptieren",
-    aiPrompt: (name: string) => `Erzeuge eine sehr kurze, herzliche und professionelle Dankesnachricht auf Deutsch für ${name} von Pluravita. Max 18 Wörter.`,
-    footerRights: "Pluravita. Alle Rechte vorbehalten.",
+    aiPrompt: (name: string) => `Kurze Begrüßung für ${name}. Betone faire Preise bei Pluravita. Max 15 Wörter.`,
     brandName: "Pluravita",
-    visionTitle: "Ein neuer Standard.",
-    visionText: "Mentale Unterstützung sollte kein Luxus sein. Wir schaffen einen sicheren Hafen für menschliche Verbindungen.",
-    pillar1Title: "Echte Empathie",
-    pillar1Text: "Unsere Mentoren werden nach ihrer menschlichen Qualität ausgewählt.",
-    pillar2Title: "Sicher & Privat",
-    pillar2Text: "Ihre Privatsphäre ist unsere absolute Priorität.",
-    pillar3Title: "Fairer Zugang",
-    pillar3Text: "Klare Tarife, damit Sie sich auf Ihr Wachstum konzentrieren können.",
-    faqTitle: "Häufige Fragen",
-    faq1Q: "Ist das professionelle Therapie?",
-    faq1A: "No. Pluravita verbindet Sie mit Mentoren und Coaches, ersetzt aber keine psychiatrische Behandlung.",
-    faq2Q: "Wann geht es los?",
-    faq2A: "Wir befinden uns in der Beta-Phase. Wartelisten-Mitglieder erhalten bevorzugten Zugang.",
+    visionTitle: "Kein Privileg.",
+    visionSubtitle: "Niemand sollte allein sein, nur weil Geld fehlt.",
+    pillar1Title: "Fairness",
+    pillar1Text: "Sitzungen zum Pauschalpreis von 20€.",
+    pillar2Title: "Ethik",
+    pillar2Text: "Klare Grenzen zwischen Mentoring und Klinik.",
+    pillar3Title: "Sicherheit",
+    pillar3Text: "Empathie und Fachkenntnis.",
+    whyNowTitle: "Jetzt starten.",
+    whyNowText: "Die ersten 100 Mitglieder erhalten Sonderkonditionen.",
+    faqTitle: "Fragen",
+    faq1Q: "Warum 20€?",
+    faq1A: "Mentoring ermöglicht faire Preise ohne klinischen Overhead.",
+    faq2Q: "Wie fange ich an?",
+    faq2A: "Tragen Sie sich ein, wir melden uns.",
     close: "Schließen",
-    earlyBirdTitle: "Willkommensangebot",
-    earlyBirdDesc: "25% RABATT auf deine erste Sitzung für die nächsten 15 Mitglieder.",
-    earlyBirdSpots: "Nur noch {n} frei!",
-    earlyBirdCTA: "Rabatt sichern",
-    footerDesc: "Klarheit gestalten. Verbindungen aufbauen. Menschliches Wohlbefinden für ein besseres Morgen fördern.",
-    empathyStandard: "Empathie als Standard"
+    footerDesc: "Demokratisierung der Empathie.",
+    empathyStandard: "Faire Hilfe"
   }
 };
 
@@ -194,7 +179,6 @@ const App: React.FC = () => {
   const [welcomeMessage, setWelcomeMessage] = useState<string>('');
   const [cookieStatus, setCookieStatus] = useState<CookieConsentStatus>('UNDECIDED');
   const [activeModal, setActiveModal] = useState<ModalType>(null);
-  const [spotsLeft, setSpotsLeft] = useState(12);
   const formRef = useRef<HTMLDivElement>(null);
 
   const t = translations[lang];
@@ -221,11 +205,6 @@ const App: React.FC = () => {
     const savedConsent = localStorage.getItem('pluravita_cookie_consent');
     if (savedConsent === 'ACCEPTED') setCookieStatus('ACCEPTED');
     else if (savedConsent === 'REJECTED') setCookieStatus('REJECTED');
-    
-    const interval = setInterval(() => {
-      setSpotsLeft(prev => prev > 1 ? prev - (Math.random() > 0.97 ? 1 : 0) : 1);
-    }, 30000);
-    return () => clearInterval(interval);
   }, []);
 
   const handleAcceptCookies = () => {
@@ -238,10 +217,6 @@ const App: React.FC = () => {
     setCookieStatus('REJECTED');
   };
 
-  const scrollToForm = () => {
-    formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  };
-
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !name) return;
@@ -251,7 +226,7 @@ const App: React.FC = () => {
       const formResponse = await fetch("https://formspree.io/f/xldqwnej", {
         method: "POST",
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, language: lang, source: 'Pluravita', offer: 'Early Bird 25% OFF FIRST SESSION' })
+        body: JSON.stringify({ name, email, language: lang, source: 'Pluravita Bold Form', offer: 'Ethics Guide + Founder Rate' })
       });
 
       if (!formResponse.ok) throw new Error("Formspree Error");
@@ -283,18 +258,9 @@ const App: React.FC = () => {
     let title = "";
     let content = "";
     switch (activeModal) {
-      case 'LEGAL': 
-        title = t.legalNotice; 
-        content = t.legalContent; 
-        break;
-      case 'PRIVACY': 
-        title = t.privacyPolicy; 
-        content = t.privacyContent; 
-        break;
-      case 'COOKIES': 
-        title = t.cookiesPolicy; 
-        content = t.cookiesContent; 
-        break;
+      case 'LEGAL': title = t.legalNotice; content = t.legalContent; break;
+      case 'PRIVACY': title = t.privacyPolicy; content = t.privacyContent; break;
+      case 'COOKIES': title = t.cookiesPolicy; content = t.cookiesContent; break;
     }
 
     return (
@@ -339,39 +305,10 @@ const App: React.FC = () => {
 
       {renderModal()}
 
-      {/* Floating Welcome Offer */}
-      {status !== SubmissionStatus.SUCCESS && cookieStatus === 'ACCEPTED' && (
-        <div className="fixed bottom-6 right-6 left-6 sm:left-auto z-[400] animate-fade-in sm:max-w-[320px] w-auto">
-          <div className="bg-white text-black p-6 rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.12)] border border-gray-100 overflow-hidden group">
-            <div className="flex flex-col gap-4">
-              <div className="flex items-center gap-3">
-                <div className="bg-brand-50 p-2 rounded-xl shrink-0">
-                  <Zap className="w-4 h-4 text-brand-primary" />
-                </div>
-                <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-primary">{t.earlyBirdTitle}</h4>
-              </div>
-              <p className="text-sm font-semibold leading-relaxed text-black">{t.earlyBirdDesc}</p>
-              <div className="flex items-center gap-2">
-                 <div className="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                    <div className="h-full bg-brand-primary transition-all duration-[3000ms]" style={{ width: `${(spotsLeft/15)*100}%` }}></div>
-                 </div>
-                 <span className="text-[10px] font-bold text-brand-primary uppercase tracking-tighter">{t.earlyBirdSpots.replace('{n}', spotsLeft.toString())}</span>
-              </div>
-              <button 
-                onClick={scrollToForm}
-                className="w-full py-3 bg-brand-primary text-white rounded-2xl text-[11px] font-bold uppercase tracking-widest hover:bg-brand-dark active:scale-95 transition-all shadow-lg shadow-brand-primary/10"
-              >
-                {t.earlyBirdCTA}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
       {cookieStatus === 'UNDECIDED' && (
         <div className="fixed inset-0 z-[1000] flex items-center justify-center p-6 bg-black/5 backdrop-blur-xl">
           <div className="bg-white rounded-[3rem] shadow-2xl max-w-md w-full p-12 text-center border border-white animate-fade-in">
-            <Cookie className="w-10 h-10 text-brand-primary mx-auto mb-8" />
+            <Wallet className="w-10 h-10 text-brand-primary mx-auto mb-8" />
             <h2 className="text-2xl font-display font-bold text-black mb-3">{t.cookieTitle}</h2>
             <p className="text-black mb-10 leading-relaxed text-sm font-light">{t.cookieDesc}</p>
             <div className="flex flex-col gap-3">
@@ -400,21 +337,16 @@ const App: React.FC = () => {
       <main className="relative z-[10]">
         
         {/* HERO SECTION */}
-        <section className="min-h-[75vh] flex flex-col justify-center px-6 sm:px-12 max-w-7xl mx-auto pt-8 pb-32">
+        <section className="min-h-[85vh] flex flex-col justify-center px-6 sm:px-12 max-w-7xl mx-auto pt-8 pb-32">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-32 items-center">
             <div className="text-left animate-fade-in">
-              <div className="inline-flex items-center gap-3 px-4 py-1.5 bg-brand-50 text-brand-primary rounded-full text-[10px] font-bold tracking-widest uppercase mb-10">
-                <Sparkles className="w-3.5 h-3.5" />
-                {t.comingSoon}
-              </div>
-              <h1 className="text-6xl sm:text-7xl lg:text-[100px] font-display font-extrabold text-black mb-8 leading-[1.0] tracking-tighter">
-                {t.title1} <br/>
-                <span className="text-brand-primary italic font-medium">{t.title2}</span>
+              <h1 className="text-5xl sm:text-6xl lg:text-[72px] font-display font-extrabold text-black mb-6 leading-[1.1] tracking-tighter">
+                {t.title1}
               </h1>
-              <p className="text-xl sm:text-2xl text-black mb-16 max-w-lg leading-relaxed font-light">
+              <p className="text-lg sm:text-xl text-black/80 mb-10 max-w-lg leading-relaxed font-light">
                 {t.subtitle}
               </p>
-              
+
               <div className="max-w-md w-full" ref={formRef}>
                 {status === SubmissionStatus.SUCCESS ? (
                   <div className="bg-white border border-brand-50 p-10 rounded-[3rem] shadow-2xl animate-fade-in ring-1 ring-brand-100">
@@ -426,32 +358,42 @@ const App: React.FC = () => {
                     </div>
                     <p className="text-black italic leading-relaxed text-lg font-light">"{welcomeMessage}"</p>
                     <button 
-                      onClick={() => { setStatus(SubmissionStatus.IDLE); setName(''); setEmail(''); }} 
+                      onClick={() => { setStatus(SubmissionStatus.IDLE); setEmail(''); setName(''); }} 
                       className="mt-10 text-[10px] text-gray-500 hover:text-brand-primary uppercase tracking-widest font-black transition-colors"
                     >
                       {t.registerAnother}
                     </button>
                   </div>
                 ) : (
-                  <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-                    <div className="flex flex-col sm:flex-row gap-4">
-                      <input 
-                        type="text" placeholder={t.namePlaceholder} value={name} onChange={e => setName(e.target.value)} required 
-                        className="flex-1 px-8 py-5 rounded-3xl border border-gray-100 bg-gray-50/30 focus:bg-white focus:border-brand-primary/30 shadow-sm outline-none transition-all font-light text-base placeholder:text-gray-400" 
-                      />
-                      <input 
-                        type="email" placeholder={t.emailPlaceholder} value={email} onChange={e => setEmail(e.target.value)} required 
-                        className="flex-1 px-8 py-5 rounded-3xl border border-gray-100 bg-gray-50/30 focus:bg-white focus:border-brand-primary/30 shadow-sm outline-none transition-all font-light text-base placeholder:text-gray-400" 
-                      />
+                  <div className="flex flex-col gap-6">
+                    {/* BOLD DIRECT FORM */}
+                    <div className="bg-white rounded-[2.5rem] p-1 shadow-2xl shadow-brand-primary/5 ring-4 ring-black/5 overflow-hidden">
+                      <form onSubmit={handleSubmit} className="flex flex-col">
+                        <input 
+                          type="text" placeholder={t.namePlaceholder} value={name} onChange={e => setName(e.target.value)} required 
+                          className="w-full px-8 py-5 border-b border-gray-100 bg-white focus:bg-gray-50 outline-none transition-all font-bold text-lg placeholder:text-gray-300" 
+                        />
+                        <input 
+                          type="email" placeholder={t.emailPlaceholder} value={email} onChange={e => setEmail(e.target.value)} required 
+                          className="w-full px-8 py-5 bg-white focus:bg-gray-50 outline-none transition-all font-bold text-lg placeholder:text-gray-300" 
+                        />
+                        <button 
+                          type="submit" disabled={status === SubmissionStatus.LOADING} 
+                          className={`m-2 py-5 bg-brand-primary hover:bg-brand-dark text-white rounded-[1.5rem] flex justify-center items-center gap-3 font-extrabold text-lg shadow-lg shadow-brand-primary/10 transition-all disabled:opacity-50 ${status === SubmissionStatus.IDLE ? 'animate-vibrate-jump' : ''}`}
+                        >
+                          {status === SubmissionStatus.LOADING ? <Loader2 className="animate-spin w-6 h-6" /> : <>{t.button} <ArrowRight className="w-6 h-6" /></>}
+                        </button>
+                      </form>
                     </div>
-                    <button 
-                      type="submit" disabled={status === SubmissionStatus.LOADING} 
-                      className={`w-full py-5 bg-brand-primary hover:bg-brand-dark text-white rounded-3xl flex justify-center items-center gap-3 font-bold text-lg shadow-xl shadow-brand-primary/10 transition-all disabled:opacity-50 ${status === SubmissionStatus.IDLE ? 'animate-vibrate-jump' : ''}`}
-                    >
-                      {status === SubmissionStatus.LOADING ? <Loader2 className="animate-spin w-6 h-6" /> : <>{t.button} <ArrowRight className="w-6 h-6" /></>}
-                    </button>
-                    <p className="text-[10px] text-gray-400 uppercase tracking-widest text-center mt-3 font-bold">{t.notice}</p>
-                  </form>
+
+                    <div className="flex items-center gap-3 px-6 py-4 bg-brand-50/50 rounded-2xl border border-brand-100/30">
+                      <BookOpen className="w-5 h-5 text-brand-primary shrink-0" />
+                      <p className="text-sm font-bold text-brand-dark leading-tight italic">
+                        {t.leadMagnet}
+                      </p>
+                    </div>
+                    <p className="text-[10px] text-gray-400 uppercase tracking-widest text-center font-black">{t.notice}</p>
+                  </div>
                 )}
               </div>
             </div>
@@ -460,53 +402,59 @@ const App: React.FC = () => {
               <div className="w-[500px] h-[640px] bg-brand-50 rounded-[4rem] overflow-hidden relative shadow-2xl shadow-gray-200">
                 <img 
                   src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=2040&auto=format&fit=crop" 
-                  alt="Well-being" 
-                  className="w-full h-full object-cover transition-all duration-1000"
+                  alt="Accessible support" 
+                  className="w-full h-full object-cover grayscale opacity-90"
                 />
               </div>
-              <div className="absolute -bottom-10 -left-10 bg-white p-12 rounded-[3.5rem] shadow-2xl max-w-xs border border-gray-50 ring-1 ring-gray-100">
+              <div className="absolute -bottom-10 -left-10 bg-white p-12 rounded-[3.5rem] shadow-2xl max-w-xs border border-gray-50 ring-2 ring-black/5">
                 <p className="text-black font-display font-extrabold text-3xl mb-4 tracking-tighter">{t.priceTag}</p>
-                <p className="text-black text-sm font-light leading-relaxed">{t.priceNotice}</p>
+                <p className="text-black text-sm font-light leading-relaxed">{t.whyNowText}</p>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Vision Section */}
-        <section className="bg-gray-50/50 py-32 sm:py-48 px-6 border-y border-gray-100">
+        {/* VISION SECTION */}
+        <section className="bg-black py-32 sm:py-48 px-6 overflow-hidden">
           <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-20 items-center">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-20 items-start mb-24">
               <div>
-                <h2 className="text-4xl sm:text-6xl font-display font-extrabold mb-10 leading-tight text-black tracking-tighter">{t.visionTitle}</h2>
-                <div className="w-12 h-1.5 bg-brand-primary rounded-full"></div>
+                <h2 className="text-4xl sm:text-6xl font-display font-extrabold mb-10 leading-tight text-white tracking-tighter">{t.visionTitle}</h2>
+                <div className="w-16 h-2 bg-brand-primary rounded-full"></div>
               </div>
-              <p className="text-2xl sm:text-3xl font-light text-black leading-relaxed pr-10">
-                {t.visionText}
+              <p className="text-2xl sm:text-3xl font-light text-white/60 leading-relaxed pr-10">
+                {t.visionSubtitle}
               </p>
             </div>
-          </div>
-        </section>
 
-        {/* Pillars Section */}
-        <section className="py-32 sm:py-48 px-6 max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-16">
-            {[
-              { icon: <MessageSquare className="w-6 h-6" />, title: t.pillar1Title, text: t.pillar1Text },
-              { icon: <ShieldCheck className="w-6 h-6" />, title: t.pillar2Title, text: t.pillar2Text },
-              { icon: <Coins className="w-6 h-6" />, title: t.pillar3Title, text: t.pillar3Text },
-            ].map((pillar, i) => (
-              <div key={i} className="flex flex-col items-start group">
-                <div className="bg-brand-50 p-5 rounded-3xl text-brand-primary mb-10 group-hover:scale-110 transition-transform duration-500">
-                  {pillar.icon}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+              {[
+                { icon: <Wallet className="w-8 h-8" />, title: t.pillar1Title, text: t.pillar1Text },
+                { icon: <ShieldCheck className="w-8 h-8" />, title: t.pillar2Title, text: t.pillar2Text },
+                { icon: <Globe className="w-8 h-8" />, title: t.pillar3Title, text: t.pillar3Text },
+              ].map((pillar, i) => (
+                <div key={i} className="bg-white/5 p-10 rounded-[2.5rem] border border-white/10 hover:bg-white/10 transition-all group">
+                  <div className="text-brand-primary mb-8 group-hover:scale-110 transition-transform">{pillar.icon}</div>
+                  <h3 className="text-2xl font-display font-bold text-white mb-4 tracking-tight">{pillar.title}</h3>
+                  <p className="text-white/40 font-light leading-relaxed">{pillar.text}</p>
                 </div>
-                <h3 className="text-2xl font-display font-extrabold text-black mb-5 tracking-tight">{pillar.title}</h3>
-                <p className="text-black font-light leading-relaxed">{pillar.text}</p>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </section>
 
-        {/* FAQ Section */}
+        {/* WHY NOW */}
+        <section className="py-32 sm:py-48 px-6 max-w-7xl mx-auto border-b border-gray-100">
+           <div className="flex flex-col items-center text-center max-w-3xl mx-auto">
+              <Sparkles className="w-12 h-12 text-brand-primary mb-8" />
+              <h2 className="text-4xl sm:text-5xl font-display font-extrabold text-black mb-10 tracking-tighter">{t.whyNowTitle}</h2>
+              <p className="text-xl sm:text-2xl text-gray-700 font-light leading-relaxed">
+                {t.whyNowText}
+              </p>
+           </div>
+        </section>
+
+        {/* FAQ SECTION */}
         <section className="py-32 sm:py-48 px-6 max-w-3xl mx-auto">
           <h2 className="text-3xl sm:text-4xl font-display font-extrabold text-black mb-20 text-center tracking-tighter">{t.faqTitle}</h2>
           <div className="space-y-2">
@@ -537,8 +485,8 @@ const App: React.FC = () => {
           </div>
         </div>
         
-        <div className="max-w-7xl mx-auto mt-24 pt-10 border-t border-gray-100 flex flex-col sm:flex-row justify-between items-center gap-6 text-[8px] font-bold uppercase tracking-[0.5em] text-black">
-          <span>© 2025 {t.brandName}. {t.footerRights}</span>
+        <div className="max-w-7xl mx-auto mt-24 pt-10 border-t border-gray-100 flex flex-col sm:flex-row justify-between items-center gap-6 text-[8px] font-bold uppercase tracking-[0.5em] text-black/60">
+          <span>© 2025 {t.brandName}. Democratizando el bienestar humano.</span>
           <span className="hidden sm:inline uppercase">{t.empathyStandard}</span>
         </div>
       </footer>
